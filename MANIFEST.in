@@ -1,0 +1,4 @@
+include LICENSE
+include README.rst
+recursive-include languagetool/static *
+recursive-include languagetool/locale *
