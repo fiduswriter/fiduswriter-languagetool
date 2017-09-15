@@ -10,21 +10,22 @@ export class DialogLT {
 
     init() {
         let buttons = [{
-            text: gettext('Cancel'),
+            text: gettext('Close'),
             click: () => {
                 this.dialog.dialog('close')
             },
             class: 'fw-button fw-orange'
         }]
+        let replacements = this.match.replacements
         let dialogDOM = dialogTemplate({
             header: this.match.shortMessage,
             message: this.match.message,
-            replacements: this.match.replacements
+            replacements
         })
         this.dialog = jQuery(dialogDOM)
         this.dialog.dialog({
-            width: 320,
-            height: 540,
+            width: 350,
+            height: Math.min(49 * replacements.length + 200, 800),
             buttons,
             create: () => this.dialogCreate(),
             close: () => {

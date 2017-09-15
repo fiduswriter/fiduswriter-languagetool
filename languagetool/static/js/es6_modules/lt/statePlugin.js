@@ -8,14 +8,14 @@ export let setDecorations = function(state, matches) {
     let decos = DecorationSet.empty
 
     matches.forEach((match, index) => {
-        let color = 'green'
+        let className = 'language'
         if (match.rule.category.id==='TYPOS') {
-            color = 'red'
+            className = 'spelling'
         } else if (match.rule.category.id==='GRAMMAR') {
-            color = 'blue'
+            className = 'grammar'
         }
         let deco = Decoration.inline(match.offset, match.offset + match.length, {
-            style: `text-decoration: underline dotted ${color};`
+            class: className
         }, {id: index})
         decos = decos.add(state.doc, [deco])
     })
@@ -103,23 +103,31 @@ export let languagetoolPlugin = function(options) {
             attributes: {
                 spellcheck: false
             },
-            handleContextMenu(view, pos, event) {
-				let {
-					decos, matches
-				} = this.getState(view.state)
-				let deco = decos.find(pos, pos)[0]
-				if (!deco) {
-                    return false
-                }
-                let match = matches[deco.spec.id]
-                let transaction = view.state.tr.setSelection(
-                    TextSelection.create(view.state.doc, deco.from, deco.to)
-                )
-                view.dispatch(transaction)
+            handleDOMEvents: {
+                contextmenu(view, event) {
+                    let pos = view.posAtCoords({left: event.clientX, top: event.clientY})
+                    if (!pos) {
+                        return
+                    }
+                    pos = pos.pos
+                    let {
+    					decos, matches
+    				} = this.getState(view.state)
+    				let deco = decos.find(pos, pos)[0]
+    				if (!deco) {
+                        return false
+                    }
+                    let match = matches[deco.spec.id]
+                    let transaction = view.state.tr.setSelection(
+                        TextSelection.create(view.state.doc, deco.from, deco.to)
+                    )
+                    view.dispatch(transaction)
 
-                let dialog = new DialogLT(options.editor, view, match)
-                dialog.init()
-                return true
+                    let dialog = new DialogLT(options.editor, view, match)
+                    dialog.init()
+                    event.preventDefault()
+                    return true
+                }
             }
         }
     })

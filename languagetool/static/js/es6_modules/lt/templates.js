@@ -6,9 +6,13 @@ export let dialogTemplate = ({header, message, replacements}) =>
             <tr><td>
                 <p>${escapeText(message)}</p>
             </td</tr>
-            <tr><td>
+        ${
+            replacements.length ?
+            `<tr><td>
                 <p>${gettext('Replace with')}:</p>
-            </td</tr>
+            </td</tr>` :
+            ''
+        }
         ${
             replacements.map((replacement, index)=>
                 `<tr><td><button class="replacement fw-button fw-white fw-large" style="width: 296px;" data-id="${index}">
