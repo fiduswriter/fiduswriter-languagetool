@@ -6,6 +6,18 @@ export class EditorLT {
         this.editor = editor
         this.supportedLanguages = []
         this.hasChecked = false
+        this.sources = {
+            main: { // main editor
+                view: this.editor.view,
+                posMap: [], // a map between doc positions in prosemirror and positions in LT
+                badPos: [] // LT positions that have no PM equivalents
+            },
+            footnotes: { // footnote editor
+                view: this.editor.mod.footnotes.fnEditor.view,
+                posMap: [],
+                badPos: []
+            }
+        }
     }
 
     wavyUnderlineStyle(color) {
@@ -60,8 +72,8 @@ export class EditorLT {
                 tooltip: gettext('Check text for grammar and spelling issues.'),
                 action: editor => {
                     let language = this.editor.view.state.doc.firstChild.attrs.language
-                    this.proofread(this.editor.view, language)
-                    this.proofread(this.editor.mod.footnotes.fnEditor.view, language)
+                    this.proofread(this.sources.main, language)
+                    this.proofread(this.sources.footnotes, language)
                 },
                 disabled: editor => !this.supportedLanguages.includes(
                     editor.view.state.doc.firstChild.attrs.language
@@ -88,9 +100,16 @@ export class EditorLT {
         })
     }
 
-    proofread(view, language) {
-        let text = this.getText(view.state.doc)
-        let state = view.state
+    proofread(source, language) {
+        source.posMap = []
+        source.badPos = []
+        let text = this.getText({
+            node: source.view.state.doc,
+            pos: 0,
+            posMap: source.posMap,
+            badPos: source.badPos
+        }).text
+        let state = source.view.state
         fetch('/proxy/languagetool/check', {
             method: "POST",
             credentials: "same-origin",
@@ -99,43 +118,92 @@ export class EditorLT {
                 language
             }))
         }).then(response => response.json()).then(json => {
-            if(view.state===state) {
+            if(source.view.state===state) {
                 // No changes have been made while spell checking took place.
-                let matches = this.filterMatches(view, json.matches)
-                this.markMatches(view, matches)
+                let matches = json.matches
+                matches = this.ltFilterMatches(source.badPos, matches)
+                matches = this.transMatches(source.posMap, matches)
+                matches = this.pmFilterMatches(source.view, matches)
+                this.markMatches(source.view, matches)
                 this.hasChecked = true
             } else {
                 // something has changed, run spellchecker again.
-                this.proofread(view, language)
+                this.proofread(source, language)
             }
         })
     }
 
-    getText(node) {
-        let start = '', end = ''
+    getText({node, pos, posMap, badPos}) {
+        let text = ''
         if (node.type.name==='text') {
-            return node.text
+            pos += node.text.length
+            text = node.text
         } else if (node.isBlock) {
-            let text = ''
+            if (node.type.name !== 'doc') {
+                pos++
+                text += '\n'
+            }
             let childCount = node.childCount, i
             for (i = 0; i < childCount; i++) {
-                text += this.getText(node.child(i))
+                let childText = this.getText({node: node.child(i), pos, posMap, badPos})
+                pos = childText.pos
+                text += childText.text
             }
-            if (node.type.name==='doc') {
-                return text
-            } else {
-                return `\n${text}\n`
+            if (node.type.name !== 'doc') {
+                pos++
+                text += '\n'
             }
+        } else if (node.type.name==='citation' && node.attrs.format==='textcite') {
+            // Citation is used as part of sentence - like "Peter (1999) said that..."
+            // We replace it with the name "John" to get the correct errors and mark the
+            // 4 letters of "John" in badPos.
+            text += 'John'
+            badPos.push([pos, pos + 4])
+            posMap.push([pos, node.nodeSize - 4])
         } else {
-            return ' '.repeat(node.nodeSize)
+            posMap.push([pos, node.nodeSize])
         }
+        return {text, pos}
     }
 
-    filterMatches(view, matches) {
-        // remove matches that touch non-text nodes
+    ltFilterMatches(badPos, matches) {
+        // remove matches touching positions that cannot be translated to PM.
+        return matches.filter(match =>
+            !badPos.find(bad =>
+                match.offset <= bad[0] && match.offset + match.length > bad[0] ||
+                match.offset <= bad[1] && match.offset + match.length > bad[1]
+            )
+        )
+    }
+
+    transPos(ltPos, posMap) {
+        // translate positions from languagetool to prosemirror
+        let offset = 0
+        posMap.find(map => {
+            if (map[0] > ltPos) {
+                return true
+            } else {
+                offset += map[1]
+                return false
+            }
+        })
+        return ltPos + offset
+    }
+
+    transMatches(posMap, matches) {
+        // translate the 'offset' and 'length' values from lt to 'from' and 'to' in PM.
+        matches.forEach(match => {
+            match.from = this.transPos(match.offset, posMap)
+            match.to = this.transPos(match.offset + match.length, posMap)
+        })
+        return matches
+    }
+
+    pmFilterMatches(view, matches) {
+        // remove matches that touch non-text nodes in PM
         return matches.filter(match =>
             view.state.doc.textBetween(
-                match.offset, match.offset + match.length
+                match.from, match.to
             ).length === match.length
         )
     }
@@ -151,11 +219,11 @@ export class EditorLT {
     }
 
     removeFnDecos() {
-        this.removeDecos(this.editor.mod.footnotes.fnEditor.view)
+        this.removeDecos(this.sources.footnotes.view)
     }
 
     removeMainDecos() {
-        this.removeDecos(this.editor.view)
+        this.removeDecos(this.sources.main.view)
     }
 
     removeDecos(view) {

@@ -54,7 +54,6 @@ export class DialogLT {
                 )
                 that.view.dispatch(transaction)
             }
-            console.log(replacement)
             that.dialog.dialog('close')
             that.view.focus()
         })

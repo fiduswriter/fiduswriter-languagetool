@@ -14,14 +14,13 @@ export let setDecorations = function(state, matches) {
         } else if (match.rule.category.id==='GRAMMAR') {
             className = 'grammar'
         }
-        let deco = Decoration.inline(match.offset, match.offset + match.length, {
+        let deco = Decoration.inline(match.from, match.to, {
             class: className
         }, {id: index})
         decos = decos.add(state.doc, [deco])
     })
 
-    let transaction = state.tr.setMeta(key, {decos, matches})
-    return transaction
+    return state.tr.setMeta(key, {decos, matches})
 }
 
 export let removeDecorations = function(state) {
@@ -35,8 +34,7 @@ export let removeDecorations = function(state) {
     decos = DecorationSet.empty
     let matches = []
 
-    let transaction = state.tr.setMeta(key, {decos, matches})
-    return transaction
+    return state.tr.setMeta(key, {decos, matches})
 }
 
 export let removeDecorationsBetween = function(state, from, to) {
@@ -45,9 +43,7 @@ export let removeDecorationsBetween = function(state, from, to) {
     } = key.getState(state)
 
     decos = decos.remove(decos.find(from, to))
-    let transaction = state.tr.setMeta(key, {decos, matches})
-    return transaction
-
+    return state.tr.setMeta(key, {decos, matches})
 }
 
 export let languagetoolPlugin = function(options) {
