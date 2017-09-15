@@ -127,7 +127,7 @@ export class EditorLT {
                 return `\n${text}\n`
             }
         } else {
-            return '\n'.repeat(node.nodeSize)
+            return ' '.repeat(node.nodeSize)
         }
     }
 
