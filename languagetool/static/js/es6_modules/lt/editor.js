@@ -55,7 +55,8 @@ export class EditorLT {
 
         toolMenu.content.unshift(
             {
-                title: gettext('Finish language check'),
+                title: gettext('Finish spell/grammar check'),
+                type: 'action',
                 tooltip: gettext('Remove lines left over in the text from language check.'),
                 action: editor => {
                     this.removeMainDecos()
@@ -68,7 +69,8 @@ export class EditorLT {
 
         toolMenu.content.unshift(
             {
-                title: gettext('Check language'),
+                title: gettext('Spell/grammar check'),
+                type: 'action',
                 tooltip: gettext('Check text for grammar and spelling issues.'),
                 action: editor => {
                     let language = this.editor.view.state.doc.firstChild.attrs.language
