@@ -178,11 +178,13 @@ export class EditorLT {
         )
     }
 
-    transPos(ltPos, posMap) {
+    transPos(ltPos, posMap, assoc = 1) {
         // translate positions from languagetool to prosemirror
+        // assoc: whether to increase or decrease when two options
+        // are available. (positive = increase, negative = decrease)
         let offset = 0
         posMap.find(map => {
-            if (map[0] > ltPos) {
+            if ((map[0] === ltPos && assoc < 0) || map[0] > ltPos) {
                 return true
             } else {
                 offset += map[1]
@@ -196,7 +198,7 @@ export class EditorLT {
         // translate the 'offset' and 'length' values from lt to 'from' and 'to' in PM.
         matches.forEach(match => {
             match.from = this.transPos(match.offset, posMap)
-            match.to = this.transPos(match.offset + match.length, posMap)
+            match.to = this.transPos(match.offset + match.length, posMap, -1)
         })
         return matches
     }

@@ -5,8 +5,9 @@ from tornado.httpclient import AsyncHTTPClient
 from base.django_handler_mixin import DjangoHandlerMixin
 from django.conf import settings
 
-LT_URL = settings.LT_URL \
-    if settings.LT_URL else 'https://languagetool.org/api/'
+LT_URL = 'https://languagetool.org/api/'
+if hasattr(settings, 'LT_URL'):
+    LT_URL = LT_URL = settings.LT_URL
 
 
 class Proxy(DjangoHandlerMixin, RequestHandler):
