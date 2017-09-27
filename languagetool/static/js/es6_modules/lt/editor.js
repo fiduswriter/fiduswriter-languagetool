@@ -1,4 +1,4 @@
-import {noSpaceTmp} from "../common"
+import {noSpaceTmp, addAlert} from "../common"
 import {languagetoolPlugin, setDecorations, removeDecorations} from "./statePlugin"
 
 export class EditorLT {
@@ -55,40 +55,48 @@ export class EditorLT {
 
         toolMenu.content.unshift(
             {
-                title: gettext('Finish spell/grammar check'),
-                type: 'action',
-                tooltip: gettext('Remove lines left over in the text from language check.'),
-                action: editor => {
-                    this.removeMainDecos()
-                    this.removeFnDecos()
-                    this.hasChecked = false
-                },
-                disabled: editor => !this.hasChecked
-            }
-        )
-
-        toolMenu.content.unshift(
-            {
-                title: gettext('Spell/grammar check'),
-                type: 'action',
-                tooltip: gettext('Check text for grammar and spelling issues.'),
-                action: editor => {
-                    let language = this.editor.view.state.doc.firstChild.attrs.language
-                    this.proofread(this.sources.main, language)
-                    this.proofread(this.sources.footnotes, language)
-                },
+                title: gettext('Spell/grammar checker'),
+                type: 'menu',
                 disabled: editor => !this.supportedLanguages.includes(
                     editor.view.state.doc.firstChild.attrs.language
-                ) || this.editor.docInfo.access_rights !== 'write'
+                ) || this.editor.docInfo.access_rights !== 'write',
+                content: [
+                    {
+                        title: gettext('Check text'),
+                        type: 'action',
+                        tooltip: gettext('Check text for grammar and spelling issues.'),
+                        action: editor => {
+                            addAlert('info', gettext('Spell/grammar check initialized.'))
+                            let language = this.editor.view.state.doc.firstChild.attrs.language
+                            let p1 = this.proofread(this.sources.main, language)
+                            let p2 = this.proofread(this.sources.footnotes, language)
+                            Promise.all([p1,p2]).then(
+                                () => addAlert('info', gettext('Spell/grammar check finished.'))
+                            )
+                        }
+                    },
+                    {
+                        title: gettext('Remove marks'),
+                        type: 'action',
+                        tooltip: gettext('Remove lines left over in the text from language check.'),
+                        action: editor => {
+                            this.removeMainDecos()
+                            this.removeFnDecos()
+                            this.hasChecked = false
+                        },
+                        disabled: editor => !this.hasChecked
+                    }
+                ]
             }
+
         )
+
         this.editor.statePlugins.push(
             [languagetoolPlugin, () => ({editor: this.editor, editorLt: this})]
         )
         this.editor.mod.footnotes.fnEditor.fnStatePlugins.push(
             [languagetoolPlugin, () => ({editor: this.editor, editorLt: this})]
         )
-
 
         this.getSupportedLanguages()
     }
@@ -112,7 +120,7 @@ export class EditorLT {
             badPos: source.badPos
         }).text
         let state = source.view.state
-        fetch('/proxy/languagetool/check', {
+        return fetch('/proxy/languagetool/check', {
             method: "POST",
             credentials: "same-origin",
             body: new URLSearchParams(Object.entries({
@@ -208,7 +216,7 @@ export class EditorLT {
         return matches.filter(match =>
             view.state.doc.textBetween(
                 match.from, match.to
-            ).length === match.length
+            ).length === (match.to - match.from)
         )
     }
 
