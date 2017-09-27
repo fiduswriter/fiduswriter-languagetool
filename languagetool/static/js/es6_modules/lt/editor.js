@@ -1,4 +1,5 @@
 import {noSpaceTmp, addAlert} from "../common"
+import {FormatCitations} from "../citations/format"
 import {languagetoolPlugin, setDecorations, removeDecorations} from "./statePlugin"
 
 export class EditorLT {
@@ -113,22 +114,38 @@ export class EditorLT {
     proofread(source, language) {
         source.posMap = []
         source.badPos = []
-        let text = this.getText({
-            node: source.view.state.doc,
-            pos: 0,
-            posMap: source.posMap,
-            badPos: source.badPos
-        }).text
-        let state = source.view.state
-        return fetch('/proxy/languagetool/check', {
-            method: "POST",
-            credentials: "same-origin",
-            body: new URLSearchParams(Object.entries({
-                text,
-                language
-            }))
+        let citationInfos = []
+        source.view.state.doc.descendants(node => {
+            if(node.type.name==='citation') {
+                citationInfos.push(Object.assign({}, node.attrs))
+            }
+        })
+        let fm = new FormatCitations(
+            citationInfos,
+            this.editor.view.state.doc.firstChild.attrs.citationstyle,
+            this.editor.mod.db.bibDB,
+            this.editor.mod.styles.citationStyles,
+            this.editor.mod.styles.citationLocales
+        )
+        return fm.init().then(() => {
+            let text = this.getText({
+                node: source.view.state.doc,
+                citationTexts: fm.citationTexts,
+                pos: 0,
+                posMap: source.posMap,
+                badPos: source.badPos
+            }).text
+            source.state = source.view.state
+            return fetch('/proxy/languagetool/check', {
+                method: "POST",
+                credentials: "same-origin",
+                body: new URLSearchParams(Object.entries({
+                    text,
+                    language
+                }))
+            })
         }).then(response => response.json()).then(json => {
-            if(source.view.state===state) {
+            if(source.view.state===source.state) {
                 // No changes have been made while spell checking took place.
                 let matches = json.matches
                 matches = this.ltFilterMatches(source.badPos, matches)
@@ -144,7 +161,7 @@ export class EditorLT {
         })
     }
 
-    getText({node, pos, posMap, badPos}) {
+    getText({node, citationTexts, pos, posMap, badPos}) {
         let text = ''
         if (node.type.name==='text') {
             pos += node.text.length
@@ -156,21 +173,27 @@ export class EditorLT {
             }
             let childCount = node.childCount, i
             for (i = 0; i < childCount; i++) {
-                let childText = this.getText({node: node.child(i), pos, posMap, badPos})
+                let childText = this.getText({node: node.child(i), citationTexts, pos, posMap, badPos})
                 pos = childText.pos
                 text += childText.text
             }
-            if (node.type.name !== 'doc') {
+            if (node.type.name !== 'doc' && (node.nodeSize-node.content.size) === 2) {
                 pos++
                 text += '\n'
             }
-        } else if (node.type.name==='citation' && node.attrs.format==='textcite') {
-            // Citation is used as part of sentence - like "Peter (1999) said that..."
-            // We replace it with the name "John" to get the correct errors and mark the
-            // 4 letters of "John" in badPos.
-            text += 'John'
-            badPos.push([pos, pos + 4])
-            posMap.push([pos, node.nodeSize - 4])
+        } else if (node.type.name==='citation') {
+            // Citation: We replace the node with the citation text and add mark
+            // those letters as a badPos so we avoid errors in them.
+            let citation = citationTexts.shift()
+            // We need to scrape HTML from string.
+
+            let dom = document.createElement('span')
+            dom.innerHTML = citation[0][1]
+            let citationText = dom.innerText
+            text += citationText
+            badPos.push([pos, pos + citationText.length])
+            pos += citationText.length
+            posMap.push([pos, node.nodeSize - citationText.length])
         } else {
             posMap.push([pos, node.nodeSize])
         }
@@ -181,8 +204,9 @@ export class EditorLT {
         // remove matches touching positions that cannot be translated to PM.
         return matches.filter(match =>
             !badPos.find(bad =>
-                match.offset <= bad[0] && match.offset + match.length > bad[0] ||
-                match.offset <= bad[1] && match.offset + match.length > bad[1]
+                match.offset < bad[0] && match.offset + match.length > bad[0] ||
+                match.offset < bad[1] && match.offset + match.length > bad[1] ||
+                match.offset >= bad[0] && match.offset + match.length <= bad[1]
             )
         )
     }
