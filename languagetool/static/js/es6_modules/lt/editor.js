@@ -136,9 +136,10 @@ export class EditorLT {
                 matches = this.pmFilterMatches(source.view, matches)
                 this.markMatches(source.view, matches)
                 this.hasChecked = true
+                return Promise.resolve()
             } else {
                 // something has changed, run spellchecker again.
-                this.proofread(source, language)
+                return this.proofread(source, language)
             }
         })
     }
