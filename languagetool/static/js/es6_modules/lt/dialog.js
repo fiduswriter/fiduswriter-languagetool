@@ -27,6 +27,7 @@ export class DialogLT {
             width: 350,
             height: Math.min(49 * replacements.length + 200, 800),
             buttons,
+            modal: true,
             create: () => this.dialogCreate(),
             close: () => {
                 this.dialog.dialog('destroy').remove()
@@ -40,7 +41,10 @@ export class DialogLT {
             let id = parseInt(jQuery(this).data('id'))
 
             let replacement = that.match.replacements[id]
-            if (replacement) {
+            if (
+                replacement &&
+                that.view.state.selection.from !== that.view.state.selection.to
+            ) {
                 let removeDecosTr = removeDecorationsBetween(
                     that.view.state,
                     that.view.state.selection.from,
