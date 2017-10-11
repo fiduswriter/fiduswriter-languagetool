@@ -7,7 +7,7 @@ from django.conf import settings
 
 LT_URL = 'https://languagetool.org/api/'
 if hasattr(settings, 'LT_URL'):
-    LT_URL = LT_URL = settings.LT_URL
+    LT_URL = settings.LT_URL
 
 
 class Proxy(DjangoHandlerMixin, RequestHandler):
