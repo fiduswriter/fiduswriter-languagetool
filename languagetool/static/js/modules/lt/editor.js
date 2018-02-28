@@ -1,6 +1,6 @@
 import {noSpaceTmp, addAlert} from "../common"
 import {FormatCitations} from "../citations/format"
-import {languagetoolPlugin, setDecorations, removeDecorations} from "./statePlugin"
+import {languagetoolPlugin, setDecorations, removeDecorations} from "./state_plugin"
 
 export class EditorLT {
     constructor(editor) {

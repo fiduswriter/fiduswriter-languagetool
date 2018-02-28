@@ -1,5 +1,5 @@
 import {dialogTemplate} from "./templates"
-import {removeDecorationsBetween} from "./statePlugin"
+import {removeDecorationsBetween} from "./state_plugin"
 
 export class DialogLT {
     constructor(editor, view, match) {
