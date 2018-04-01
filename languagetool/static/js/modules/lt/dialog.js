@@ -1,5 +1,6 @@
 import {dialogTemplate} from "./templates"
 import {removeDecorationsBetween} from "./state_plugin"
+import {Dialog, escapeText, findTarget} from "../common"
 
 export class DialogLT {
     constructor(editor, view, match) {
@@ -9,57 +10,55 @@ export class DialogLT {
     }
 
     init() {
-        let buttons = [{
-            text: gettext('Close'),
-            click: () => {
-                this.dialog.dialog('close')
-            },
-            class: 'fw-button fw-orange'
-        }]
         let replacements = this.match.replacements
-        let dialogDOM = dialogTemplate({
-            header: this.match.shortMessage,
-            message: this.match.message,
-            replacements
-        })
-        this.dialog = jQuery(dialogDOM)
-        this.dialog.dialog({
+        this.dialog = new Dialog({
             width: 350,
-            height: Math.min(49 * replacements.length + 200, 800),
-            buttons,
-            modal: true,
-            create: () => this.dialogCreate(),
-            close: () => {
-                this.dialog.dialog('destroy').remove()
+            height: Math.min(49 * replacements.length + 60, 660),
+            title: escapeText(this.match.shortMessage),
+            body: dialogTemplate({
+                message: this.match.message,
+                replacements
+            }),
+            buttons: [{type: 'close'}]
+        })
+        this.dialog.open()
+        this.bind()
+    }
+
+    bind() {
+        this.dialog.dialogEl.addEventListener('click', event => {
+            let el = {}
+            switch (true) {
+                case findTarget(event, '.replacement', el):
+                    let id = parseInt(el.target.dataset.id)
+                    this.applyReplacement(id)
+                    break
+                default:
+                    break
             }
         })
     }
 
-    dialogCreate() {
-        let that = this
-        jQuery(this.dialog).on('click', '.replacement', function() {
-            let id = parseInt(jQuery(this).data('id'))
+    applyReplacement(id) {
+        let replacement = this.match.replacements[id]
+        if (
+            replacement &&
+            this.view.state.selection.from !== this.view.state.selection.to
+        ) {
+            let removeDecosTr = removeDecorationsBetween(
+                this.view.state,
+                this.view.state.selection.from,
+                this.view.state.selection.to
+            )
+            this.view.dispatch(removeDecosTr)
 
-            let replacement = that.match.replacements[id]
-            if (
-                replacement &&
-                that.view.state.selection.from !== that.view.state.selection.to
-            ) {
-                let removeDecosTr = removeDecorationsBetween(
-                    that.view.state,
-                    that.view.state.selection.from,
-                    that.view.state.selection.to
-                )
-                that.view.dispatch(removeDecosTr)
-
-                let transaction = that.view.state.tr.replaceSelectionWith(
-                    that.view.state.schema.text(replacement.value),
-                    true
-                )
-                that.view.dispatch(transaction)
-            }
-            that.dialog.dialog('close')
-            that.view.focus()
-        })
+            let transaction = this.view.state.tr.replaceSelectionWith(
+                this.view.state.schema.text(replacement.value),
+                true
+            )
+            this.view.dispatch(transaction)
+        }
+        this.dialog.close()
+        this.view.focus()
     }
 }
