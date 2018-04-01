@@ -1,4 +1,4 @@
-import {noSpaceTmp, addAlert} from "../common"
+import {noSpaceTmp, addAlert, postJson} from "../common"
 import {FormatCitations} from "../citations/format"
 import {languagetoolPlugin, setDecorations, removeDecorations} from "./state_plugin"
 
@@ -103,10 +103,9 @@ export class EditorLT {
     }
 
     getSupportedLanguages() {
-        fetch('/proxy/languagetool/languages', {
-            method: "POST",
-            credentials: "same-origin",
-        }).then(response => response.json()).then(json => {
+        postJson(
+            '/proxy/languagetool/languages'
+        ).then(json => {
             this.supportedLanguages = json.map(entry => entry.longCode)
         })
     }
