@@ -105,7 +105,7 @@ export class EditorLT {
     getSupportedLanguages() {
         postJson(
             '/proxy/languagetool/languages'
-        ).then(json => {
+        ).then(({json}) => {
             this.supportedLanguages = json.map(entry => entry.longCode)
         })
     }
