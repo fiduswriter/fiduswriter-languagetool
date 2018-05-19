@@ -1,5 +1,6 @@
 import {Plugin, PluginKey, TextSelection} from "prosemirror-state"
 import {Decoration, DecorationSet} from "prosemirror-view"
+
 import {DialogLT} from "./dialog"
 
 const key = new PluginKey('languagetool')
