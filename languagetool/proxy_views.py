@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from future.moves.urllib.parse import urljoin
 
 from tornado.web import RequestHandler, asynchronous, HTTPError
