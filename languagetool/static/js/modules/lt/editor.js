@@ -116,7 +116,7 @@ export class EditorLT {
         let citationInfos = []
         source.view.state.doc.descendants(node => {
             if(node.type.name==='citation') {
-                citationInfos.push(Object.assign({}, node.attrs))
+                citationInfos.push(Object.assign({}, node.attrs, {references: node.attrs.references.slice()}))
             }
         })
         let fm = new FormatCitations(
