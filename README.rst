@@ -1,13 +1,13 @@
-=====
+========================
 FidusWriter-Languagetool
-=====
+========================
 
 FidusWriter-Languagetool is a Fidus writer plugin to connect a Fidus Writer instance
 with Languagetool (LT).
 
 
 Installation
------------
+------------
 
 1. Install Fidus Writer if you haven't done so already.
 
