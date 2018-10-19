@@ -5,7 +5,7 @@ import {DialogLT} from "./dialog"
 
 const key = new PluginKey('languagetool')
 
-export let setDecorations = function(state, matches) {
+export const setDecorations = function(state, matches) {
     let decos = DecorationSet.empty
 
     matches.forEach((match, index) => {
@@ -15,7 +15,7 @@ export let setDecorations = function(state, matches) {
         } else if (match.rule.category.id==='GRAMMAR') {
             className = 'grammar'
         }
-        let deco = Decoration.inline(match.from, match.to, {
+        const deco = Decoration.inline(match.from, match.to, {
             class: className
         }, {id: index})
         decos = decos.add(state.doc, [deco])
@@ -24,7 +24,7 @@ export let setDecorations = function(state, matches) {
     return state.tr.setMeta(key, {decos, matches})
 }
 
-export let removeDecorations = function(state) {
+export const removeDecorations = function(state) {
     let {
         decos
     } = key.getState(state)
@@ -33,12 +33,11 @@ export let removeDecorations = function(state) {
         return
     }
     decos = DecorationSet.empty
-    let matches = []
 
-    return state.tr.setMeta(key, {decos, matches})
+    return state.tr.setMeta(key, {decos, matches: []})
 }
 
-export let removeDecorationsBetween = function(state, from, to) {
+export const removeDecorationsBetween = function(state, from, to) {
     let {
         decos, matches
     } = key.getState(state)
@@ -47,7 +46,7 @@ export let removeDecorationsBetween = function(state, from, to) {
     return state.tr.setMeta(key, {decos, matches})
 }
 
-export let languagetoolPlugin = function(options) {
+export const languagetoolPlugin = function(options) {
     return new Plugin({
         key,
         state: {
@@ -73,7 +72,7 @@ export let languagetoolPlugin = function(options) {
                     }
                 }
 
-                let meta = tr.getMeta(key)
+                const meta = tr.getMeta(key)
                 if (meta) {
                     // There has been an update, return values from meta instead
                     // of previous values
@@ -92,7 +91,7 @@ export let languagetoolPlugin = function(options) {
         },
         props: {
             decorations(state) {
-				let {
+				const {
 					decos
 				} = this.getState(state)
 				return decos
@@ -110,17 +109,17 @@ export let languagetoolPlugin = function(options) {
                     let {
     					decos, matches
     				} = this.getState(view.state)
-    				let deco = decos.find(pos, pos)[0]
+    				const deco = decos.find(pos, pos)[0]
     				if (!deco) {
                         return false
                     }
-                    let match = matches[deco.spec.id]
-                    let transaction = view.state.tr.setSelection(
+                    const match = matches[deco.spec.id]
+                    const transaction = view.state.tr.setSelection(
                         TextSelection.create(view.state.doc, deco.from, deco.to)
                     )
                     view.dispatch(transaction)
 
-                    let dialog = new DialogLT(options.editor, view, match)
+                    const dialog = new DialogLT(options.editor, view, match)
                     dialog.init()
                     event.preventDefault()
                     return true

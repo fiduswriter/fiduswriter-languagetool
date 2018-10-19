@@ -10,7 +10,7 @@ export class DialogLT {
     }
 
     init() {
-        let replacements = this.match.replacements
+        const replacements = this.match.replacements
         this.dialog = new Dialog({
             width: 350,
             height: Math.min(49 * replacements.length + 60, 660),
@@ -27,10 +27,10 @@ export class DialogLT {
 
     bind() {
         this.dialog.dialogEl.addEventListener('click', event => {
-            let el = {}
+            const el = {}
             switch (true) {
                 case findTarget(event, '.replacement', el):
-                    let id = parseInt(el.target.dataset.id)
+                    const id = parseInt(el.target.dataset.id)
                     this.applyReplacement(id)
                     break
                 default:
@@ -40,19 +40,19 @@ export class DialogLT {
     }
 
     applyReplacement(id) {
-        let replacement = this.match.replacements[id]
+        const replacement = this.match.replacements[id]
         if (
             replacement &&
             this.view.state.selection.from !== this.view.state.selection.to
         ) {
-            let removeDecosTr = removeDecorationsBetween(
+            const removeDecosTr = removeDecorationsBetween(
                 this.view.state,
                 this.view.state.selection.from,
                 this.view.state.selection.to
             )
             this.view.dispatch(removeDecosTr)
 
-            let transaction = this.view.state.tr.replaceSelectionWith(
+            const transaction = this.view.state.tr.replaceSelectionWith(
                 this.view.state.schema.text(replacement.value),
                 true
             )

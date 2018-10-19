@@ -1,5 +1,4 @@
-from __future__ import unicode_literals
-from future.moves.urllib.parse import urljoin
+from urllib.parse import urljoin
 
 from tornado.web import RequestHandler, asynchronous, HTTPError
 from tornado.httpclient import AsyncHTTPClient
@@ -15,12 +14,12 @@ class Proxy(DjangoHandlerMixin, RequestHandler):
     @asynchronous
     def post(self, relative_url):
         user = self.get_current_user()
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             self.set_status(401)
             self.finish()
             return
         body = self.request.body
-        url = urljoin(LT_URL, '/v2/') + relative_url
+        url = urljoin(LT_URL, 'v2/') + relative_url
         http = AsyncHTTPClient()
         http.fetch(
             url,

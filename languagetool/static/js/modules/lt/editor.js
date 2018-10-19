@@ -113,13 +113,13 @@ export class EditorLT {
     proofread(source, language) {
         source.posMap = []
         source.badPos = []
-        let citationInfos = []
+        const citationInfos = []
         source.view.state.doc.descendants(node => {
             if(node.type.name==='citation') {
                 citationInfos.push(Object.assign({}, node.attrs, {references: node.attrs.references.slice()}))
             }
         })
-        let fm = new FormatCitations(
+        const fm = new FormatCitations(
             citationInfos,
             this.editor.view.state.doc.firstChild.attrs.citationstyle,
             this.editor.mod.db.bibDB,
@@ -127,7 +127,7 @@ export class EditorLT {
             this.editor.mod.styles.citationLocales
         )
         return fm.init().then(() => {
-            let text = this.getText({
+            const text = this.getText({
                 node: source.view.state.doc,
                 citationTexts: fm.citationTexts,
                 pos: 0,
@@ -162,7 +162,9 @@ export class EditorLT {
 
     getText({node, citationTexts, pos, posMap, badPos}) {
         let text = ''
-        if (node.type.name==='text') {
+        if (node.marks && node.marks.find(mark => mark.type.name === 'deletion')) {
+            posMap.push([pos, node.nodeSize])
+        } else if (node.type.name==='text') {
             pos += node.text.length
             text = node.text
         } else if (node.isBlock) {
@@ -170,9 +172,9 @@ export class EditorLT {
                 pos++
                 text += '\n'
             }
-            let childCount = node.childCount, i
-            for (i = 0; i < childCount; i++) {
-                let childText = this.getText({node: node.child(i), citationTexts, pos, posMap, badPos})
+            const childCount = node.childCount
+            for (let i = 0; i < childCount; i++) {
+                const childText = this.getText({node: node.child(i), citationTexts, pos, posMap, badPos})
                 pos = childText.pos
                 text += childText.text
             }
@@ -183,12 +185,12 @@ export class EditorLT {
         } else if (node.type.name==='citation') {
             // Citation: We replace the node with the citation text and add mark
             // those letters as a badPos so we avoid errors in them.
-            let citation = citationTexts.shift()
+            const citation = citationTexts.shift()
             // We need to scrape HTML from string.
 
-            let dom = document.createElement('span')
+            const dom = document.createElement('span')
             dom.innerHTML = citation[0][1]
-            let citationText = dom.innerText
+            const citationText = dom.innerText
             text += citationText
             badPos.push([pos, pos + citationText.length])
             pos += citationText.length
@@ -248,7 +250,7 @@ export class EditorLT {
         if(!matches.length) {
             return
         }
-        let tr = setDecorations(view.state, matches)
+        const tr = setDecorations(view.state, matches)
         if (tr) {
             view.dispatch(tr)
         }
@@ -263,7 +265,7 @@ export class EditorLT {
     }
 
     removeDecos(view) {
-        let tr = removeDecorations(view.state)
+        const tr = removeDecorations(view.state)
         if (tr) {
             view.dispatch(tr)
         }

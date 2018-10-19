@@ -1,6 +1,6 @@
 import {escapeText} from "../common"
 
-export let dialogTemplate = ({message, replacements}) =>
+export const dialogTemplate = ({message, replacements}) =>
     `<table class="fw-dialog-table">
         <tr><td>
             <p>${escapeText(message)}</p>
