@@ -58,8 +58,8 @@ export class EditorLT {
             {
                 title: gettext('Spell/grammar checker'),
                 type: 'menu',
-                disabled: editor => !this.supportedLanguages.includes(
-                    editor.view.state.doc.firstChild.attrs.language
+                disabled: _editor => !this.supportedLanguages.includes(
+                    this.editor.view.state.doc.firstChild.attrs.language
                 ) || this.editor.docInfo.access_rights !== 'write',
                 content: [
                     {
@@ -69,6 +69,12 @@ export class EditorLT {
                         action: _editor => {
                             addAlert('info', gettext('Spell/grammar check initialized.'))
                             const language = this.editor.view.state.doc.firstChild.attrs.language
+                            console.log(this.editor)
+                            console.log(this.editor.view)
+                            console.log(this.editor.view.state)
+                            console.log(this.editor.view.state.doc)
+                            console.log(this.editor.view.state.doc.firstChild)
+                            console.log(this.editor.view.state.doc.firstChild.attrs)
                             const p1 = this.proofread(this.sources.main, language)
                             const p2 = this.proofread(this.sources.footnotes, language)
                             Promise.all([p1, p2]).then(
@@ -123,8 +129,8 @@ export class EditorLT {
             citationInfos,
             this.editor.view.state.doc.firstChild.attrs.citationstyle,
             this.editor.mod.db.bibDB,
-            this.editor.mod.styles.citationStyles,
-            this.editor.mod.styles.citationLocales
+            this.editor.mod.documentTemplate.citationStyles,
+            this.editor.mod.documentTemplate.citationLocales
         )
         return fm.init().then(() => {
             const text = this.getText({
