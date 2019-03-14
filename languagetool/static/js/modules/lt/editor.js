@@ -37,7 +37,7 @@ export class EditorLT {
     }
 
     init() {
-        let styleEl = document.createElement('style')
+        const styleEl = document.createElement('style')
 
         styleEl.innerHTML =
         `.language {
@@ -52,7 +52,7 @@ export class EditorLT {
         `
         document.head.appendChild(styleEl)
 
-        let toolMenu = this.editor.menu.headerbarModel.content.find(menu => menu.id==='tools')
+        const toolMenu = this.editor.menu.headerbarModel.content.find(menu => menu.id==='tools')
 
         toolMenu.content.unshift(
             {
@@ -66,12 +66,12 @@ export class EditorLT {
                         title: gettext('Check text'),
                         type: 'action',
                         tooltip: gettext('Check text for grammar and spelling issues.'),
-                        action: editor => {
+                        action: _editor => {
                             addAlert('info', gettext('Spell/grammar check initialized.'))
-                            let language = this.editor.view.state.doc.firstChild.attrs.language
-                            let p1 = this.proofread(this.sources.main, language)
-                            let p2 = this.proofread(this.sources.footnotes, language)
-                            Promise.all([p1,p2]).then(
+                            const language = this.editor.view.state.doc.firstChild.attrs.language
+                            const p1 = this.proofread(this.sources.main, language)
+                            const p2 = this.proofread(this.sources.footnotes, language)
+                            Promise.all([p1, p2]).then(
                                 () => addAlert('info', gettext('Spell/grammar check finished.'))
                             )
                         }
@@ -80,12 +80,12 @@ export class EditorLT {
                         title: gettext('Remove marks'),
                         type: 'action',
                         tooltip: gettext('Remove lines left over in the text from language check.'),
-                        action: editor => {
+                        action: _editor => {
                             this.removeMainDecos()
                             this.removeFnDecos()
                             this.hasChecked = false
                         },
-                        disabled: editor => !this.hasChecked
+                        disabled: _editor => !this.hasChecked
                     }
                 ]
             }
@@ -115,7 +115,7 @@ export class EditorLT {
         source.badPos = []
         const citationInfos = []
         source.view.state.doc.descendants(node => {
-            if(node.type.name==='citation') {
+            if (node.type.name==='citation') {
                 citationInfos.push(Object.assign({}, node.attrs, {references: node.attrs.references.slice()}))
             }
         })
@@ -144,7 +144,7 @@ export class EditorLT {
                 }))
             })
         }).then(response => response.json()).then(json => {
-            if(source.view.state===source.state) {
+            if (source.view.state===source.state) {
                 // No changes have been made while spell checking took place.
                 let matches = json.matches
                 matches = this.ltFilterMatches(source.badPos, matches)
@@ -247,7 +247,7 @@ export class EditorLT {
     }
 
     markMatches(view, matches) {
-        if(!matches.length) {
+        if (!matches.length) {
             return
         }
         const tr = setDecorations(view.state, matches)

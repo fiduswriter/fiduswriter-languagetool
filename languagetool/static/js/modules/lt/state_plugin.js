@@ -38,9 +38,9 @@ export const removeDecorations = function(state) {
 }
 
 export const removeDecorationsBetween = function(state, from, to) {
-    let {
-        decos, matches
-    } = key.getState(state)
+    const keyState = key.getState(state),
+        matches = keyState.matches
+    let decos = keyState.decos
 
     decos = decos.remove(decos.find(from, to))
     return state.tr.setMeta(key, {decos, matches})
@@ -78,9 +78,9 @@ export const languagetoolPlugin = function(options) {
                     // of previous values
                     return meta
                 }
-                let {
-                    decos, matches
-                } = this.getState(oldState)
+                const keyState = key.getState(oldState),
+                    matches = keyState.matches
+                let decos = keyState.decos
 
                 decos = decos.map(tr.mapping, tr.doc)
 
@@ -106,11 +106,9 @@ export const languagetoolPlugin = function(options) {
                         return
                     }
                     pos = pos.pos
-                    let {
-    					decos, matches
-    				} = this.getState(view.state)
-    				const deco = decos.find(pos, pos)[0]
-    				if (!deco) {
+                    const {decos, matches} = this.getState(view.state)
+                    const deco = decos.find(pos, pos)[0]
+                    if (!deco) {
                         return false
                     }
                     const match = matches[deco.spec.id]
