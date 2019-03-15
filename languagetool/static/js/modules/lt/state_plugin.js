@@ -6,10 +6,9 @@ import {DialogLT} from "./dialog"
 const key = new PluginKey('languagetool')
 
 export const setDecorations = function(state, newMatches) {
-    let {
-        decos,
-        matches
-    } = key.getState(state)
+    const keyState = key.getState(state),
+        matches = keyState.matches
+    let decos = keyState.decos
 
     newMatches.forEach((match, index) => {
         let className = 'language'

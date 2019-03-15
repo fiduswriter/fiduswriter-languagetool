@@ -242,7 +242,7 @@ export class EditorLT {
                 return Promise.resolve()
             } else {
                 // something has changed, run spellchecker again.
-                return this.proofread(source, language)
+                return this.proofread(source)
             }
         })
     }
