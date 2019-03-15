@@ -5,10 +5,13 @@ import {DialogLT} from "./dialog"
 
 const key = new PluginKey('languagetool')
 
-export const setDecorations = function(state, matches) {
-    let decos = DecorationSet.empty
+export const setDecorations = function(state, newMatches) {
+    let {
+        decos,
+        matches
+    } = key.getState(state)
 
-    matches.forEach((match, index) => {
+    newMatches.forEach((match, index) => {
         let className = 'language'
         if (match.rule.category.id==='TYPOS') {
             className = 'spelling'
@@ -17,11 +20,11 @@ export const setDecorations = function(state, matches) {
         }
         const deco = Decoration.inline(match.from, match.to, {
             class: className
-        }, {id: index})
+        }, {id: index + matches.length})
         decos = decos.add(state.doc, [deco])
     })
 
-    return state.tr.setMeta(key, {decos, matches})
+    return state.tr.setMeta(key, {decos, matches: matches.concat(newMatches)})
 }
 
 export const removeDecorations = function(state) {

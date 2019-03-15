@@ -7,18 +7,7 @@ export class EditorLT {
         this.editor = editor
         this.supportedLanguages = []
         this.hasChecked = false
-        this.sources = {
-            main: { // main editor
-                view: this.editor.view,
-                posMap: [], // a map between doc positions in prosemirror and positions in LT
-                badPos: [] // LT positions that have no PM equivalents
-            },
-            footnotes: { // footnote editor
-                view: this.editor.mod.footnotes.fnEditor.view,
-                posMap: [],
-                badPos: []
-            }
-        }
+        this.sources = false
     }
 
     wavyUnderlineStyle(color) {
@@ -68,16 +57,15 @@ export class EditorLT {
                         tooltip: gettext('Check text for grammar and spelling issues.'),
                         action: _editor => {
                             addAlert('info', gettext('Spell/grammar check initialized.'))
-                            const language = this.editor.view.state.doc.firstChild.attrs.language
-                            console.log(this.editor)
-                            console.log(this.editor.view)
-                            console.log(this.editor.view.state)
-                            console.log(this.editor.view.state.doc)
-                            console.log(this.editor.view.state.doc.firstChild)
-                            console.log(this.editor.view.state.doc.firstChild.attrs)
-                            const p1 = this.proofread(this.sources.main, language)
-                            const p2 = this.proofread(this.sources.footnotes, language)
-                            Promise.all([p1, p2]).then(
+                            this.removeMainDecos()
+                            this.removeFnDecos()
+                            if (!this.sources) {
+                                this.initSources()
+                            }
+
+                            Promise.all(
+                                this.sources.map(source => this.proofread(source))
+                            ).then(
                                 () => addAlert('info', gettext('Spell/grammar check finished.'))
                             )
                         }
@@ -108,6 +96,35 @@ export class EditorLT {
         this.getSupportedLanguages()
     }
 
+    initSources() {
+        this.sources = [
+            { // footnote editor
+                language: this.editor.view.state.doc.firstChild.attrs.language,
+                view: this.editor.mod.footnotes.fnEditor.view,
+                getNodes: () => [this.editor.mod.footnotes.fnEditor.view.state.doc],
+                getStartPos: () => 0,
+                posMap: [],
+                badPos: []
+            }
+        ]
+        this.editor.view.state.doc.firstChild.forEach((node, offset, index) => {
+            this.sources.push({
+                language: this.editor.view.state.doc.firstChild.child(index).attrs.language || this.editor.view.state.doc.firstChild.attrs.language,
+                view: this.editor.view,
+                getNodes: () => [this.editor.view.state.doc.firstChild.child(index)],
+                getStartPos: () => {
+                    let pos = 1
+                    for (let i = 0; i < index; i++) {
+                        pos += this.editor.view.state.doc.firstChild.child(i).nodeSize
+                    }
+                    return pos
+                },
+                posMap: [], // a map between doc positions in prosemirror and positions in LT
+                badPos: [] // LT positions that have no PM equivalents
+            })
+        })
+    }
+
     getSupportedLanguages() {
         postJson(
             '/proxy/languagetool/languages'
@@ -116,15 +133,15 @@ export class EditorLT {
         })
     }
 
-    proofread(source, language) {
+    proofread(source) {
         source.posMap = []
         source.badPos = []
         const citationInfos = []
-        source.view.state.doc.descendants(node => {
+        source.getNodes().forEach(topNode => topNode.descendants(node => {
             if (node.type.name==='citation') {
                 citationInfos.push(Object.assign({}, node.attrs, {references: node.attrs.references.slice()}))
             }
-        })
+        }))
         const fm = new FormatCitations(
             citationInfos,
             this.editor.view.state.doc.firstChild.attrs.citationstyle,
@@ -133,28 +150,39 @@ export class EditorLT {
             this.editor.mod.documentTemplate.citationLocales
         )
         return fm.init().then(() => {
-            const text = this.getText({
-                node: source.view.state.doc,
+            const updatedText = this.getText({
+                nodes: source.getNodes(),
                 citationTexts: fm.citationTexts,
                 pos: 0,
                 posMap: source.posMap,
                 badPos: source.badPos
             }).text
-            source.state = source.view.state
-            return fetch('/proxy/languagetool/check', {
-                method: "POST",
-                credentials: "same-origin",
-                body: new URLSearchParams(Object.entries({
-                    text,
-                    language
-                }))
-            })
+            if (updatedText === source.text) {
+                // The text has not changed since last test, so we can use the same matches
+                return Promise.resolve({
+                    json: () => Promise.resolve({matches: source.matches})
+                })
+            } else {
+                source.text = updatedText
+                return fetch('/proxy/languagetool/check', {
+                    method: "POST",
+                    credentials: "same-origin",
+                    body: new URLSearchParams(Object.entries({
+                        text: source.text,
+                        language: source.language
+                    }))
+                })
+            }
         }).then(response => response.json()).then(json => {
-            if (source.view.state===source.state) {
+            const updatedText = this.getText({
+                nodes: source.getNodes(),
+                citationTexts: fm.citationTexts
+            }).text
+            if (source.text===updatedText) {
                 // No changes have been made while spell checking took place.
-                let matches = json.matches
-                matches = this.ltFilterMatches(source.badPos, matches)
-                matches = this.transMatches(source.posMap, matches)
+                source.matches = json.matches
+                let matches = this.ltFilterMatches(source.badPos, source.matches)
+                matches = this.transMatches(source.getStartPos(), source.posMap, matches)
                 matches = this.pmFilterMatches(source.view, matches)
                 this.markMatches(source.view, matches)
                 this.hasChecked = true
@@ -166,44 +194,58 @@ export class EditorLT {
         })
     }
 
-    getText({node, citationTexts, pos, posMap, badPos}) {
+    getText({nodes, citationTexts, pos = 0, posMap = [], badPos = []}) {
         let text = ''
-        if (node.marks && node.marks.find(mark => mark.type.name === 'deletion')) {
-            posMap.push([pos, node.nodeSize])
-        } else if (node.type.name==='text') {
-            pos += node.text.length
-            text = node.text
-        } else if (node.isBlock) {
-            if (node.type.name !== 'doc') {
-                pos++
-                text += '\n'
-            }
-            const childCount = node.childCount
-            for (let i = 0; i < childCount; i++) {
-                const childText = this.getText({node: node.child(i), citationTexts, pos, posMap, badPos})
-                pos = childText.pos
-                text += childText.text
-            }
-            if (node.type.name !== 'doc' && (node.nodeSize-node.content.size) === 2) {
-                pos++
-                text += '\n'
-            }
-        } else if (node.type.name==='citation') {
-            // Citation: We replace the node with the citation text and add mark
-            // those letters as a badPos so we avoid errors in them.
-            const citation = citationTexts.shift()
-            // We need to scrape HTML from string.
+        nodes.forEach(node => {
+            if (node.marks && node.marks.find(mark => mark.type.name === 'deletion')) {
+                posMap.push([pos, node.nodeSize])
+            } else if (node.type.name==='text') {
+                pos += node.text.length
+                text += node.text
+            } else if (node.isBlock) {
+                if (node.type.name !== 'doc') {
+                    pos++
+                    text += '\n'
+                }
+                if (node.content && node.content.content) {
+                    const childText = this.getText({
+                        nodes: node.content.content,
+                        citationTexts,
+                        pos,
+                        posMap,
+                        badPos
+                    })
+                    pos = childText.pos
+                    text += childText.text
+                }
 
-            const dom = document.createElement('span')
-            dom.innerHTML = citation[0][1]
-            const citationText = dom.innerText
-            text += citationText
-            badPos.push([pos, pos + citationText.length])
-            pos += citationText.length
-            posMap.push([pos, node.nodeSize - citationText.length])
-        } else {
-            posMap.push([pos, node.nodeSize])
-        }
+                // const childCount = node.childCount
+                // for (let i = 0; i < childCount; i++) {
+                //     const childText =
+                //     pos = childText.pos
+                //     text += childText.text
+                // }
+                if (node.type.name !== 'doc' && (node.nodeSize-node.content.size) === 2) {
+                    pos++
+                    text += '\n'
+                }
+            } else if (node.type.name==='citation') {
+                // Citation: We replace the node with the citation text and add mark
+                // those letters as a badPos so we avoid errors in them.
+                const citation = citationTexts.shift()
+                // We need to scrape HTML from string.
+
+                const dom = document.createElement('span')
+                dom.innerHTML = citation[0][1]
+                const citationText = dom.innerText
+                text += citationText
+                badPos.push([pos, pos + citationText.length])
+                pos += citationText.length
+                posMap.push([pos, node.nodeSize - citationText.length])
+            } else {
+                posMap.push([pos, node.nodeSize])
+            }
+        })
         return {text, pos}
     }
 
@@ -234,13 +276,17 @@ export class EditorLT {
         return ltPos + offset
     }
 
-    transMatches(posMap, matches) {
+    transMatches(startPos, posMap, matches) {
         // translate the 'offset' and 'length' values from lt to 'from' and 'to' in PM.
-        matches.forEach(match => {
-            match.from = this.transPos(match.offset, posMap)
-            match.to = this.transPos(match.offset + match.length, posMap, -1)
-        })
-        return matches
+        return matches.map(match =>
+            Object.assign(
+                {
+                    from: startPos + this.transPos(match.offset, posMap),
+                    to: startPos + this.transPos(match.offset + match.length, posMap, -1)
+                },
+                match
+            )
+        )
     }
 
     pmFilterMatches(view, matches) {
@@ -263,11 +309,11 @@ export class EditorLT {
     }
 
     removeFnDecos() {
-        this.removeDecos(this.sources.footnotes.view)
+        this.removeDecos(this.editor.mod.footnotes.fnEditor.view)
     }
 
     removeMainDecos() {
-        this.removeDecos(this.sources.main.view)
+        this.removeDecos(this.editor.view)
     }
 
     removeDecos(view) {

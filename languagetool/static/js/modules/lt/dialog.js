@@ -13,7 +13,7 @@ export class DialogLT {
         const replacements = this.match.replacements
         this.dialog = new Dialog({
             width: 350,
-            height: Math.min(49 * replacements.length + 60, 660),
+            height: Math.min(49 * replacements.length + 60, 460),
             title: escapeText(this.match.shortMessage),
             body: dialogTemplate({
                 message: this.match.message,
