@@ -181,22 +181,36 @@ export class EditorLT {
                 citationInfos.push(Object.assign({}, node.attrs, {references: node.attrs.references.slice()}))
             }
         }))
-        const fm = new FormatCitations(
-            citationInfos,
-            this.editor.view.state.doc.firstChild.attrs.citationstyle,
-            this.editor.mod.db.bibDB,
-            this.editor.mod.documentTemplate.citationStyles,
-            this.editor.mod.documentTemplate.citationLocales
-        )
-        return fm.init().then(() => {
-            const updatedText = this.getText({
-                nodes: source.getNodes(),
+        let fm, promise
+        if (citationInfos.length) {
+            fm = new FormatCitations(
+                citationInfos,
+                this.editor.view.state.doc.firstChild.attrs.citationstyle,
+                this.editor.mod.db.bibDB,
+                this.editor.mod.documentTemplate.citationStyles,
+                this.editor.mod.documentTemplate.citationLocales
+            )
+            promise = fm.init()
+        } else {
+             fm = {citationTexts: []}
+             promise = Promise.resolve()
+        }
+
+        return promise.then(() => {
+            const nodes = source.getNodes()
+            const updatedText = nodes.length ? this.getText({
+                nodes,
                 citationTexts: fm.citationTexts,
                 pos: 0,
                 posMap: source.posMap,
                 badPos: source.badPos
-            }).text
-            if (updatedText === source.text) {
+            }).text : ''
+            if (!updatedText.trim().length) {
+                source.text = updatedText
+                return Promise.resolve({
+                    json: () => Promise.resolve({matches: []})
+                })
+            } else if (updatedText === source.text) {
                 // The text has not changed since last test, so we can use the same matches
                 return Promise.resolve({
                     json: () => Promise.resolve({matches: source.matches})
