@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='fiduswriter-languagetool',
-    version='3.6.0-rc.1',
+    version='3.6.0',
     packages=find_packages(),
     include_package_data=True,
     license='AGPL License',
