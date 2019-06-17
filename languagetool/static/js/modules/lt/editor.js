@@ -200,7 +200,7 @@ export class EditorLT {
             const nodes = source.getNodes()
             const updatedText = nodes.length ? this.getText({
                 nodes,
-                citationTexts: fm.citationTexts,
+                citationTexts: fm.citationTexts.slice(),
                 pos: 0,
                 posMap: source.posMap,
                 badPos: source.badPos
@@ -229,7 +229,7 @@ export class EditorLT {
         }).then(response => response.json()).then(json => {
             const updatedText = this.getText({
                 nodes: source.getNodes(),
-                citationTexts: fm.citationTexts
+                citationTexts: fm.citationTexts.slice()
             }).text
             if (source.text===updatedText) {
                 // No changes have been made while spell checking took place.
@@ -272,12 +272,6 @@ export class EditorLT {
                     text += childText.text
                 }
 
-                // const childCount = node.childCount
-                // for (let i = 0; i < childCount; i++) {
-                //     const childText =
-                //     pos = childText.pos
-                //     text += childText.text
-                // }
                 if (node.type.name !== 'doc' && (node.nodeSize-node.content.size) === 2) {
                     pos++
                     text += '\n'
