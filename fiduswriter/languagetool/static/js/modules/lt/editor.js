@@ -184,11 +184,11 @@ export class EditorLT {
         let fm, promise
         if (citationInfos.length) {
             fm = new FormatCitations(
+                this.editor.app.csl,
                 citationInfos,
                 this.editor.view.state.doc.firstChild.attrs.citationstyle,
-                this.editor.mod.db.bibDB,
-                this.editor.mod.documentTemplate.citationStyles,
-                this.editor.mod.documentTemplate.citationLocales
+                '',
+                this.editor.mod.db.bibDB
             )
             promise = fm.init()
         } else {

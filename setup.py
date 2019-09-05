@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='fiduswriter-languagetool',
-    version='3.7.0-dev',
+    version='3.7.0rc1',
     packages=find_namespace_packages(),
     include_package_data=True,
     license='AGPL License',
@@ -25,7 +25,7 @@ setup(
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
