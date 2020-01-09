@@ -233,7 +233,7 @@ export class EditorLT {
             }).text
             if (source.text===updatedText) {
                 // No changes have been made while spell checking took place.
-                source.matches = json.matches
+                source.matches = json.matches || []
                 let matches = this.ltFilterMatches(source.badPos, source.matches)
                 matches = this.transMatches(source.getStartPos(), source.posMap, matches)
                 matches = this.pmFilterMatches(source.view, matches)
