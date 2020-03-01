@@ -29,7 +29,7 @@ install:
       then pip3 install https://github.com/fiduswriter/fiduswriter/archive/develop.zip;
       else pip3 install https://github.com/fiduswriter/fiduswriter/archive/master.zip;
       fi
-    - wget https://languagetool.org/download/LanguageTool-4.7.zip
+    - wget https://languagetool.org/download/LanguageTool-${LANGUAGETOOL_VERSION}.zip
     - unzip LanguageTool-${LANGUAGETOOL_VERSION}.zip
     - cd fiduswriter
     - mv ../travis/configuration.py ./
