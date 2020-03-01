@@ -3,3 +3,16 @@
 dist/
 build/
 fiduswriter_languagetool.egg-info/
+build/
+__pycache__/
+venv/
+fiduswriter/.transpile
+fiduswriter/media
+fiduswriter/static-libs
+fiduswriter/static-transpile
+fiduswriter/static-collected
+fiduswriter/.coveragerc
+fiduswriter/configuration.py
+fiduswriter/fiduswriter.sql
+*.zip
+LanguageTool-*

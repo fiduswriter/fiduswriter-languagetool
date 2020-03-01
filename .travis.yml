@@ -1,0 +1,55 @@
+language: python
+python:
+    - "3.7"
+node_js:
+    - "10"
+jdk: openjdk10
+
+dist: bionic
+sudo: required
+
+addons:
+    chrome: stable
+
+env:
+  - LANGUAGETOOL_VERSION=4.8
+
+before_script:
+    - LATEST_CHROMEDRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE"`
+    - curl "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" -O
+    - unzip chromedriver_linux64.zip -d ~/bin
+
+before_install:
+    - sudo apt-get -y install libjpeg-dev python3-dev python3-pip python3-distutils gettext zlib1g-dev wget build-essential libmagic1
+
+install:
+    - pip3 install wheel
+    - pip3 install pip --upgrade
+    - if grep version setup.py | grep -q "dev";
+      then pip3 install https://github.com/fiduswriter/fiduswriter/archive/develop.zip;
+      else pip3 install https://github.com/fiduswriter/fiduswriter/archive/master.zip;
+      fi
+    - wget https://languagetool.org/download/LanguageTool-4.7.zip
+    - unzip LanguageTool-${LANGUAGETOOL_VERSION}.zip
+    - cd fiduswriter
+    - mv ../travis/configuration.py ./
+    - mv ../travis/.coveragerc ./
+    - pip3 install requests[security]
+    - pip3 install coverage
+    - pip3 install coveralls
+    - pip3 install selenium
+    - pip3 install flake8
+    - coverage run $(which fiduswriter) setup --no-static
+    - fiduswriter lint
+
+script:
+    - jdk_switcher use openjdk10
+    - cd ../${LANGUAGETOOL_VERSION}
+    - java -cp languagetool-server.jar org.languagetool.server.HTTPServer --port 9000 &
+    - cd ../fiduswriter
+    - travis_retry coverage run --concurrency=multiprocessing $(which fiduswriter) test languagetool
+    - coverage combine
+
+after_success:
+  - coverage report
+  - coveralls
