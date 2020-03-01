@@ -31,7 +31,9 @@ install:
       fi
     - wget https://languagetool.org/download/LanguageTool-${LANGUAGETOOL_VERSION}.zip
     - unzip LanguageTool-${LANGUAGETOOL_VERSION}.zip
-    - cd fiduswriter
+    - cd LanguageTool-${LANGUAGETOOL_VERSION}
+    - java -cp languagetool-server.jar org.languagetool.server.HTTPServer --port 9000 &
+    - cd ../fiduswriter
     - mv ../travis/configuration.py ./
     - mv ../travis/.coveragerc ./
     - pip3 install requests[security]
@@ -43,10 +45,6 @@ install:
     - fiduswriter lint
 
 script:
-    - jdk_switcher use openjdk10
-    - cd ../${LANGUAGETOOL_VERSION}
-    - java -cp languagetool-server.jar org.languagetool.server.HTTPServer --port 9000 &
-    - cd ../fiduswriter
     - travis_retry coverage run --concurrency=multiprocessing $(which fiduswriter) test languagetool
     - coverage combine
 
