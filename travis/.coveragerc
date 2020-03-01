@@ -1,0 +1,7 @@
+[run]
+parallel = True
+omit =
+	*migrations*
+	venv/*
+	*virtualenv*
+	configuration.py
