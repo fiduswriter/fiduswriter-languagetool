@@ -47,9 +47,9 @@ export class EditorLT {
             {
                 title: gettext('Spell/grammar checker'),
                 type: 'menu',
-                disabled: _editor => !this.supportedLanguages.includes(
-                    this.editor.view.state.doc.firstChild.attrs.language
-                ) || this.editor.docInfo.access_rights !== 'write' || !this.editor.ws.isOnline(),
+                disabled: editor => !this.supportedLanguages.includes(
+                    editor.view.state.doc.firstChild.attrs.language
+                ) || editor.docInfo.access_rights !== 'write' || !editor.ws.isOnline(),
                 content: [
                     {
                         title: gettext('Check text'),
@@ -69,7 +69,7 @@ export class EditorLT {
                                 () => addAlert('info', gettext('Spell/grammar check finished.'))
                             )
                         },
-                        disabled: _editor => !this.editor.ws.isOnline()
+                        disabled: editor => !editor.ws.isOnline()
                     },
                     {
                         title: gettext('Remove marks'),
