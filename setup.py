@@ -1,5 +1,7 @@
 import os
+from glob import glob
 from setuptools import find_namespace_packages, setup
+from setuptools.command.build_py import build_py as _build_py
 
 # From https://github.com/pypa/setuptools/pull/1574
 class build_py(_build_py):
