@@ -250,7 +250,7 @@ export class EditorLT {
     getText({nodes, citationTexts, pos = 0, posMap = [], badPos = []}) {
         let text = ''
         nodes.forEach(node => {
-            if (node.marks && node.marks.find(mark => mark.type.name === 'deletion')) {
+            if (node.marks?.find(mark => mark.type.name === 'deletion')) {
                 posMap.push([pos, node.nodeSize])
             } else if (node.type.name==='text') {
                 pos += node.text.length
@@ -260,7 +260,7 @@ export class EditorLT {
                     pos++
                     text += '\n'
                 }
-                if (node.content && node.content.content) {
+                if (node.content?.content) {
                     const childText = this.getText({
                         nodes: node.content.content,
                         citationTexts,
