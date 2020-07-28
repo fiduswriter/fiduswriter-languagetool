@@ -12,9 +12,9 @@ export const setDecorations = function(state, newMatches) {
 
     newMatches.forEach((match, index) => {
         let className = 'language'
-        if (match.rule.category.id==='TYPOS') {
+        if (match.rule.category.id === 'TYPOS') {
             className = 'spelling'
-        } else if (match.rule.category.id==='GRAMMAR') {
+        } else if (match.rule.category.id === 'GRAMMAR') {
             className = 'grammar'
         }
         const deco = Decoration.inline(match.from, match.to, {
@@ -92,11 +92,11 @@ export const languagetoolPlugin = function(options) {
         },
         props: {
             decorations(state) {
-				const {
-					decos
-				} = this.getState(state)
-				return decos
-			},
+                const {
+                    decos
+                } = this.getState(state)
+                return decos
+            },
             attributes: {
                 spellcheck: false
             },
