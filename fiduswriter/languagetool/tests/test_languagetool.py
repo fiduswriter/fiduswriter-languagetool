@@ -37,6 +37,9 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
             passtext='otter1'
         )
 
+    def tearDown(self):
+        self.leave_site(self.driver)
+
     def assertInfoAlert(self, message):
         i = 0
         message_found = False
@@ -74,9 +77,10 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
             EC.presence_of_element_located((By.CLASS_NAME, 'editor-toolbar'))
         )
         self.driver.find_element(By.CSS_SELECTOR, ".article-body").click()
-        self.driver.find_element(By.CSS_SELECTOR, ".article-body").send_keys(
-            "Thhis is me writing a sentence I forgetz the periodz"
-        )
+        self.driver.find_element(By.CSS_SELECTOR, ".article-body").send_keys((
+            "Thhis is me writing a sentence "
+            "I forgetz the the periodz to much"
+        ))
         self.driver.find_element_by_xpath(
             '//*[@id="header-navigation"]/div[4]/span'
         ).click()
@@ -92,6 +96,15 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
         action.move_to_element(
             self.driver.find_element_by_css_selector(
                 'span.spelling'
+            )
+        ).context_click().perform()
+        self.driver.find_element_by_css_selector(
+            'button.replacement'
+        ).click()
+        action = ActionChains(self.driver)
+        action.move_to_element(
+            self.driver.find_element_by_css_selector(
+                'span.grammar'
             )
         ).context_click().perform()
         self.driver.find_element_by_css_selector(
