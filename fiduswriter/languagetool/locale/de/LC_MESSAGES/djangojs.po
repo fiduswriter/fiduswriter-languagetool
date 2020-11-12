@@ -1,42 +1,41 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Fidus Writer languagetool\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-01 23:16+0000\n"
-"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: POEditor.com\n"
+"Project-Id-Version: Fidus Writer languagetool\n"
+"Language: de\n"
 
-#: languagetool/static/js/modules/lt/editor.js:34
+#: languagetool/static/js/modules/lt/editor.js:44
 msgid "Spell/grammar checker"
 msgstr "Rechtschreib- / Grammatikprüfung"
 
-#: languagetool/static/js/modules/lt/editor.js:38
+#: languagetool/static/js/modules/lt/editor.js:48
 msgid "Check text"
 msgstr "Text überprüfen"
 
-#: languagetool/static/js/modules/lt/editor.js:40
+#: languagetool/static/js/modules/lt/editor.js:50
 msgid "Check text for grammar and spelling issues."
 msgstr "Text auf Grammatik- und Rechtschreibprobleme überprüfen."
 
-#: languagetool/static/js/modules/lt/editor.js:42
+#: languagetool/static/js/modules/lt/editor.js:52
 msgid "Spell/grammar check initialized."
 msgstr "Rechtschreib- / Grammatikprüfung initialisiert."
 
-#: languagetool/static/js/modules/lt/editor.js:50
+#: languagetool/static/js/modules/lt/editor.js:60
 msgid "Spell/grammar check finished."
 msgstr "Rechtschreib- / Grammatikprüfung beendet."
 
-#: languagetool/static/js/modules/lt/editor.js:53
+#: languagetool/static/js/modules/lt/editor.js:63
 msgid "Remove marks"
 msgstr "Markierungen entfernen"
 
-#: languagetool/static/js/modules/lt/editor.js:55
+#: languagetool/static/js/modules/lt/editor.js:65
 msgid "Remove lines left over in the text from language check."
 msgstr "Im Text verbleibende Zeilen von der Sprachprüfung entfernen."
 
-#: languagetool/static/js/modules/lt/templates.js:5
+#: languagetool/static/js/modules/lt/templates.js:13
 msgid "Replace with"
 msgstr "Ersetzen mit"
+

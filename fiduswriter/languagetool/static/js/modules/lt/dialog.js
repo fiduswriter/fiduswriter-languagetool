@@ -29,13 +29,13 @@ export class DialogLT {
         this.dialog.dialogEl.addEventListener('click', event => {
             const el = {}
             switch (true) {
-                case findTarget(event, '.replacement', el): {
-                    const id = parseInt(el.target.dataset.id)
-                    this.applyReplacement(id)
-                    break
-                }
-                default:
-                    break
+            case findTarget(event, '.replacement', el): {
+                const id = parseInt(el.target.dataset.id)
+                this.applyReplacement(id)
+                break
+            }
+            default:
+                break
             }
         })
     }

@@ -1,5 +1,7 @@
 import os
+from glob import glob
 from setuptools import find_namespace_packages, setup
+from setuptools.command.build_py import build_py as _build_py
 
 # From https://github.com/pypa/setuptools/pull/1574
 class build_py(_build_py):
@@ -28,7 +30,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='fiduswriter-languagetool',
-    version='3.8.0rc1',
+    version='3.9.0',
     packages=find_namespace_packages(),
     include_package_data=True,
     exclude_package_data={

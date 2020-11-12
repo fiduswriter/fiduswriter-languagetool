@@ -41,7 +41,7 @@ export class EditorLT {
         `
         document.head.appendChild(styleEl)
 
-        const toolMenu = this.editor.menu.headerbarModel.content.find(menu => menu.id==='tools')
+        const toolMenu = this.editor.menu.headerbarModel.content.find(menu => menu.id === 'tools')
 
         toolMenu.content.unshift(
             {
@@ -124,7 +124,7 @@ export class EditorLT {
                     }
                     let fnCount = 0
                     this.editor.view.state.doc.firstChild.child(index).descendants(node => {
-                        if (node.type.name==='footnote') {
+                        if (node.type.name === 'footnote') {
                             fnCount++
                         }
                     })
@@ -134,7 +134,7 @@ export class EditorLT {
                     let fnFromIndex = 0
                     for (let i = 0; i < index; i++) {
                         this.editor.view.state.doc.firstChild.child(i).descendants(node => {
-                            if (node.type.name==='footnote') {
+                            if (node.type.name === 'footnote') {
                                 fnFromIndex++
                             }
                         })
@@ -148,7 +148,7 @@ export class EditorLT {
                     let fnFromIndex = 0
                     for (let i = 0; i < index; i++) {
                         this.editor.view.state.doc.firstChild.child(i).descendants(node => {
-                            if (node.type.name==='footnote') {
+                            if (node.type.name === 'footnote') {
                                 fnFromIndex++
                             }
                         })
@@ -178,7 +178,7 @@ export class EditorLT {
         source.badPos = []
         const citationInfos = []
         source.getNodes().forEach(topNode => topNode.descendants(node => {
-            if (node.type.name==='citation') {
+            if (node.type.name === 'citation') {
                 citationInfos.push(Object.assign({}, node.attrs, {references: node.attrs.references.slice()}))
             }
         }))
@@ -193,8 +193,8 @@ export class EditorLT {
             )
             promise = fm.init()
         } else {
-             fm = {citationTexts: []}
-             promise = Promise.resolve()
+            fm = {citationTexts: []}
+            promise = Promise.resolve()
         }
 
         return promise.then(() => {
@@ -232,7 +232,7 @@ export class EditorLT {
                 nodes: source.getNodes(),
                 citationTexts: fm.citationTexts.slice()
             }).text
-            if (source.text===updatedText) {
+            if (source.text === updatedText) {
                 // No changes have been made while spell checking took place.
                 source.matches = json.matches || []
                 let matches = this.ltFilterMatches(source.badPos, source.matches)
@@ -251,9 +251,9 @@ export class EditorLT {
     getText({nodes, citationTexts, pos = 0, posMap = [], badPos = []}) {
         let text = ''
         nodes.forEach(node => {
-            if (node.marks && node.marks.find(mark => mark.type.name === 'deletion')) {
+            if (node.marks?.find(mark => mark.type.name === 'deletion')) {
                 posMap.push([pos, node.nodeSize])
-            } else if (node.type.name==='text') {
+            } else if (node.type.name === 'text') {
                 pos += node.text.length
                 text += node.text
             } else if (node.isBlock) {
@@ -261,7 +261,7 @@ export class EditorLT {
                     pos++
                     text += '\n'
                 }
-                if (node.content && node.content.content) {
+                if (node.content?.content) {
                     const childText = this.getText({
                         nodes: node.content.content,
                         citationTexts,
@@ -273,11 +273,11 @@ export class EditorLT {
                     text += childText.text
                 }
 
-                if (node.type.name !== 'doc' && (node.nodeSize-node.content.size) === 2) {
+                if (node.type.name !== 'doc' && (node.nodeSize - node.content.size) === 2) {
                     pos++
                     text += '\n'
                 }
-            } else if (node.type.name==='citation') {
+            } else if (node.type.name === 'citation') {
                 // Citation: We replace the node with the citation text and add mark
                 // those letters as a badPos so we avoid errors in them.
                 const citation = citationTexts.shift()

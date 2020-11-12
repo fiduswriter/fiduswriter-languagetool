@@ -6,6 +6,8 @@ fiduswriter_languagetool.egg-info/
 build/
 __pycache__/
 venv/
+.envrc
+.direnv/
 fiduswriter/.transpile
 fiduswriter/media
 fiduswriter/static-libs
