@@ -49,7 +49,7 @@ export class EditorLT {
                 type: 'menu',
                 disabled: editor => !this.supportedLanguages.includes(
                     editor.view.state.doc.firstChild.attrs.language
-                ) || editor.docInfo.access_rights !== 'write' || window.isOffline,
+                ) || editor.docInfo.access_rights !== 'write' || editor.app.isOffline(),
                 content: [
                     {
                         title: gettext('Check text'),
@@ -69,7 +69,7 @@ export class EditorLT {
                                 () => addAlert('info', gettext('Spell/grammar check finished.'))
                             )
                         },
-                        disabled: _editor => window.isOffline,
+                        disabled: editor => editor.app.isOffline(),
                     },
                     {
                         title: gettext('Remove marks'),
