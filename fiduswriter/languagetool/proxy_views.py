@@ -18,7 +18,7 @@ class Proxy(DjangoHandlerMixin, RequestHandler):
             self.finish()
             return
         body = self.request.body
-        url = urljoin(LT_URL, 'v2/') + relative_url
+        url = f"{urljoin(LT_URL, 'v2/')}{relative_url}"
         http = AsyncHTTPClient()
         response = await http.fetch(
             url,
