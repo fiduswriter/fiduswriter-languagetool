@@ -30,7 +30,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='fiduswriter-languagetool',
-    version='3.9.1',
+    version='3.10.0',
     packages=find_namespace_packages(),
     include_package_data=True,
     exclude_package_data={
@@ -45,7 +45,7 @@ setup(
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Operating System :: OS Independent',
