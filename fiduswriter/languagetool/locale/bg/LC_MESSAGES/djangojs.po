@@ -1,41 +1,42 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: Fidus Writer languagetool\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-18 18:44+0000\n"
+"Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: POEditor.com\n"
-"Project-Id-Version: Fidus Writer languagetool\n"
-"Language: bg\n"
 
-#: languagetool/static/js/modules/lt/editor.js:44
+#: languagetool/static/js/modules/lt/editor.js:26
 msgid "Spell/grammar checker"
 msgstr "Проверка на правопис / граматика"
 
-#: languagetool/static/js/modules/lt/editor.js:48
+#: languagetool/static/js/modules/lt/editor.js:30
 msgid "Check text"
 msgstr "Проверете текст"
 
-#: languagetool/static/js/modules/lt/editor.js:50
+#: languagetool/static/js/modules/lt/editor.js:32
 msgid "Check text for grammar and spelling issues."
 msgstr "Проверете текста за граматични и правописни проблеми."
 
-#: languagetool/static/js/modules/lt/editor.js:52
+#: languagetool/static/js/modules/lt/editor.js:34
 msgid "Spell/grammar check initialized."
 msgstr "Проверката на правописа / граматиката се инициализира."
 
-#: languagetool/static/js/modules/lt/editor.js:60
+#: languagetool/static/js/modules/lt/editor.js:42
 msgid "Spell/grammar check finished."
 msgstr "Проверката на правописа / граматиката приключи."
 
-#: languagetool/static/js/modules/lt/editor.js:63
+#: languagetool/static/js/modules/lt/editor.js:46
 msgid "Remove marks"
 msgstr "Премахване на марки"
 
-#: languagetool/static/js/modules/lt/editor.js:65
+#: languagetool/static/js/modules/lt/editor.js:48
 msgid "Remove lines left over in the text from language check."
 msgstr "Премахнете линиите, останали в текста, от проверка на езика."
 
-#: languagetool/static/js/modules/lt/templates.js:13
+#: languagetool/static/js/modules/lt/templates.js:5
 msgid "Replace with"
 msgstr "Замени с"
-
