@@ -10,10 +10,7 @@ from testing.selenium_helper import SeleniumHelper
 
 
 class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
-    fixtures = [
-        'initial_documenttemplates.json',
-        'initial_styles.json'
-    ]
+    fixtures = ["initial_documenttemplates.json", "initial_styles.json"]
 
     @classmethod
     def setUpClass(cls):
@@ -32,9 +29,7 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
 
     def setUp(self):
         self.user = self.create_user(
-            username='Yeti',
-            email='yeti@snowman.com',
-            passtext='otter1'
+            username="Yeti", email="yeti@snowman.com", passtext="otter1"
         )
 
     def tearDown(self):
@@ -43,11 +38,10 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
     def assertInfoAlert(self, message):
         i = 0
         message_found = False
-        while(i < 100):
+        while i < 100:
             i = i + 1
             info_alerts = self.driver.find_elements(
-                By.CSS_SELECTOR,
-                "body #alerts-outer-wrapper .alerts-info"
+                By.CSS_SELECTOR, "body #alerts-outer-wrapper .alerts-info"
             )
             for alert in info_alerts:
                 try:
@@ -67,20 +61,19 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
         # Create chapter one doc
         WebDriverWait(self.driver, self.wait_time).until(
             EC.element_to_be_clickable(
-                (
-                    By.CSS_SELECTOR,
-                    ".new_document button"
-                )
+                (By.CSS_SELECTOR, ".new_document button")
             )
         ).click()
         WebDriverWait(self.driver, self.wait_time).until(
-            EC.presence_of_element_located((By.CLASS_NAME, 'editor-toolbar'))
+            EC.presence_of_element_located((By.CLASS_NAME, "editor-toolbar"))
         )
         self.driver.find_element(By.CSS_SELECTOR, ".article-body").click()
-        self.driver.find_element(By.CSS_SELECTOR, ".article-body").send_keys((
-            "Thhis is me writing a sentence "
-            "I forgetz the the periodz to much"
-        ))
+        self.driver.find_element(By.CSS_SELECTOR, ".article-body").send_keys(
+            (
+                "Thhis is me writing a sentence "
+                "I forgetz the the periodz to much"
+            )
+        )
         self.driver.find_element_by_xpath(
             '//*[@id="header-navigation"]/div[4]/span'
         ).click()
@@ -94,31 +87,19 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
         self.assertInfoAlert("Spell/grammar check finished.")
         action = ActionChains(self.driver)
         action.move_to_element(
-            self.driver.find_element_by_css_selector(
-                'span.spelling'
-            )
+            self.driver.find_element_by_css_selector("span.spelling")
         ).context_click().perform()
-        self.driver.find_element_by_css_selector(
-            'button.replacement'
-        ).click()
+        self.driver.find_element_by_css_selector("button.replacement").click()
         action = ActionChains(self.driver)
         action.move_to_element(
-            self.driver.find_element_by_css_selector(
-                'span.grammar'
-            )
+            self.driver.find_element_by_css_selector("span.grammar")
         ).context_click().perform()
-        self.driver.find_element_by_css_selector(
-            'button.replacement'
-        ).click()
+        self.driver.find_element_by_css_selector("button.replacement").click()
         action = ActionChains(self.driver)
         action.move_to_element(
-            self.driver.find_element_by_css_selector(
-                'span.language'
-            )
+            self.driver.find_element_by_css_selector("span.language")
         ).context_click().perform()
-        self.driver.find_element_by_css_selector(
-            'button.replacement'
-        ).click()
+        self.driver.find_element_by_css_selector("button.replacement").click()
         self.driver.find_element_by_xpath(
             '//*[@id="header-navigation"]/div[4]/span'
         ).click()
@@ -130,8 +111,10 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
         ).click()
         time.sleep(1)
         self.assertEqual(
-            len(self.driver.find_elements_by_css_selector(
-                'span.language,span.spelling'
-            )),
-            0
+            len(
+                self.driver.find_elements_by_css_selector(
+                    "span.language,span.spelling"
+                )
+            ),
+            0,
         )

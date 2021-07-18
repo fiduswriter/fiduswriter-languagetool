@@ -5,8 +5,8 @@ from tornado.httpclient import AsyncHTTPClient
 from base.django_handler_mixin import DjangoHandlerMixin
 from django.conf import settings
 
-LT_URL = 'https://languagetool.org/api/'
-if hasattr(settings, 'LT_URL'):
+LT_URL = "https://languagetool.org/api/"
+if hasattr(settings, "LT_URL"):
     LT_URL = settings.LT_URL
 
 
@@ -20,11 +20,7 @@ class Proxy(DjangoHandlerMixin, RequestHandler):
         body = self.request.body
         url = f"{urljoin(LT_URL, 'v2/')}{relative_url}"
         http = AsyncHTTPClient()
-        response = await http.fetch(
-            url,
-            method='POST',
-            body=body
-        )
+        response = await http.fetch(url, method="POST", body=body)
         if response.error:
             raise HTTPError(500)
         self.write(response.body)
