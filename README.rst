@@ -5,6 +5,7 @@ FidusWriter-Languagetool
 FidusWriter-Languagetool is a Fidus writer plugin to connect a Fidus Writer instance
 with Languagetool (LT).
 
+**NOTE:** You should first install Languagetool (a Java program) and make it run as a server. It is included in the Ubuntu Snap version of Fidus Writer so that will be the simplest way to install it for 99% of users. 
 
 Installation
 ------------
@@ -21,7 +22,7 @@ Installation
         'languagetool',
     )
 
-3. Add a setting for the URL where you will be running LT in the configuration.py file like this:
+3. Add a setting for the URL where you are running Languagetool in the configuration.py file like this:
 
     LT_URL = 'http://localhost:8081'
 
