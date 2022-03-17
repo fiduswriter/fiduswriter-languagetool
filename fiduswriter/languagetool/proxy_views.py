@@ -1,6 +1,6 @@
 from urllib.parse import urljoin
 
-from tornado.web import RequestHandler, HTTPError
+from tornado.web import RequestHandler
 from tornado.httpclient import AsyncHTTPClient
 from base.django_handler_mixin import DjangoHandlerMixin
 from django.conf import settings
