@@ -20,8 +20,12 @@ class Proxy(DjangoHandlerMixin, RequestHandler):
         body = self.request.body
         url = f"{urljoin(LT_URL, 'v2/')}{relative_url}"
         http = AsyncHTTPClient()
-        response = await http.fetch(url, method="POST", body=body)
-        if response.error:
-            raise HTTPError(500)
+        response = await http.fetch(
+            url,
+            method="POST",
+            body=body,
+            request_timeout=88,  # Firefox times out after 90 seconds, so we need to return before that.
+        )
         self.write(response.body)
+        self.set_status(response.code)
         self.finish()

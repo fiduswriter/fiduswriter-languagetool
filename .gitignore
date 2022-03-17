@@ -18,3 +18,4 @@ fiduswriter/configuration.py
 fiduswriter/fiduswriter.sql
 *.zip
 LanguageTool-*
+*.sql

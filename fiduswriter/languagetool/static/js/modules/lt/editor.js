@@ -218,7 +218,7 @@ export class EditorLT {
                 })
             } else {
                 source.text = updatedText
-                return fetch('/proxy/languagetool/check', {
+                return fetch("/proxy/languagetool/check", {
                     method: "POST",
                     credentials: "same-origin",
                     body: new URLSearchParams(Object.entries({
