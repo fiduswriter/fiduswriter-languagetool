@@ -30,7 +30,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='fiduswriter-languagetool',
-    version='3.10.2',
+    version='3.10.3',
     packages=find_namespace_packages(),
     include_package_data=True,
     exclude_package_data={
