@@ -74,46 +74,46 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
                 "I forgetz the the periodz to much"
             )
         )
-        self.driver.find_element_by_xpath(
-            '//*[@id="header-navigation"]/div[4]/span'
+        self.driver.find_element(
+            By.XPATH, '//*[@id="header-navigation"]/div[4]/span'
         ).click()
-        self.driver.find_element_by_xpath(
-            '//*[normalize-space()="Spell/grammar checker"]'
+        self.driver.find_element(
+            By.XPATH, '//*[normalize-space()="Spell/grammar checker"]'
         ).click()
-        self.driver.find_element_by_xpath(
-            '//*[normalize-space()="Check text"]'
+        self.driver.find_element(
+            By.XPATH, '//*[normalize-space()="Check text"]'
         ).click()
         self.assertInfoAlert("Spell/grammar check initialized.")
         self.assertInfoAlert("Spell/grammar check finished.")
         action = ActionChains(self.driver)
         action.move_to_element(
-            self.driver.find_element_by_css_selector("span.spelling")
+            self.driver.find_element(By.CSS_SELECTOR, "span.spelling")
         ).context_click().perform()
-        self.driver.find_element_by_css_selector("button.replacement").click()
+        self.driver.find_element(By.CSS_SELECTOR, "button.replacement").click()
         action = ActionChains(self.driver)
         action.move_to_element(
-            self.driver.find_element_by_css_selector("span.grammar")
+            self.driver.find_element(By.CSS_SELECTOR, "span.grammar")
         ).context_click().perform()
-        self.driver.find_element_by_css_selector("button.replacement").click()
+        self.driver.find_element(By.CSS_SELECTOR, "button.replacement").click()
         action = ActionChains(self.driver)
         action.move_to_element(
-            self.driver.find_element_by_css_selector("span.language")
+            self.driver.find_element(By.CSS_SELECTOR, "span.language")
         ).context_click().perform()
-        self.driver.find_element_by_css_selector("button.replacement").click()
-        self.driver.find_element_by_xpath(
-            '//*[@id="header-navigation"]/div[4]/span'
+        self.driver.find_element(By.CSS_SELECTOR, "button.replacement").click()
+        self.driver.find_element(
+            By.XPATH, '//*[@id="header-navigation"]/div[4]/span'
         ).click()
-        self.driver.find_element_by_xpath(
-            '//*[normalize-space()="Spell/grammar checker"]'
+        self.driver.find_element(
+            By.XPATH, '//*[normalize-space()="Spell/grammar checker"]'
         ).click()
-        self.driver.find_element_by_xpath(
-            '//*[normalize-space()="Remove marks"]'
+        self.driver.find_element(
+            By.XPATH, '//*[normalize-space()="Remove marks"]'
         ).click()
         time.sleep(1)
         self.assertEqual(
             len(
-                self.driver.find_elements_by_css_selector(
-                    "span.language,span.spelling"
+                self.driver.find_elements(
+                    By.CSS_SELECTOR, "span.language,span.spelling"
                 )
             ),
             0,
