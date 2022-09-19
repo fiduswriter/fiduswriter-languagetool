@@ -1,4 +1,4 @@
-import {noSpaceTmp, addAlert, postJson} from "../common"
+import {noSpaceTmp, addAlert, postJson, getCookie} from "../common"
 import {FormatCitations} from "../citations/format"
 import {languagetoolPlugin, setDecorations, removeDecorations} from "./state_plugin"
 
@@ -167,7 +167,7 @@ export class EditorLT {
 
     getSupportedLanguages() {
         postJson(
-            "/proxy/languagetool/languages"
+            "/api/languagetool/languages/"
         ).then(({json}) => {
             this.supportedLanguages = json.map(entry => entry.longCode)
         })
@@ -218,9 +218,14 @@ export class EditorLT {
                 })
             } else {
                 source.text = updatedText
-                return fetch("/proxy/languagetool/check", {
+                return fetch("/api/languagetool/check/", {
                     method: "POST",
-                    credentials: "same-origin",
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "Accept": "application/json",
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    credentials: "include",
                     body: new URLSearchParams(Object.entries({
                         text: source.text,
                         language: source.language
