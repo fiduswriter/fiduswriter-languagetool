@@ -3,7 +3,7 @@ import {Decoration, DecorationSet} from "prosemirror-view"
 
 import {DialogLT} from "./dialog"
 
-const key = new PluginKey('languagetool')
+const key = new PluginKey("languagetool")
 
 export const setDecorations = function(state, newMatches) {
     const keyState = key.getState(state),
@@ -11,11 +11,11 @@ export const setDecorations = function(state, newMatches) {
     let decos = keyState.decos
 
     newMatches.forEach((match, index) => {
-        let className = 'language'
-        if (match.rule.category.id === 'TYPOS') {
-            className = 'spelling'
-        } else if (match.rule.category.id === 'GRAMMAR') {
-            className = 'grammar'
+        let className = "language"
+        if (match.rule.category.id === "TYPOS") {
+            className = "spelling"
+        } else if (match.rule.category.id === "GRAMMAR") {
+            className = "grammar"
         }
         const deco = Decoration.inline(match.from, match.to, {
             class: className

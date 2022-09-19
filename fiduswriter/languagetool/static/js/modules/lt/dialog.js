@@ -19,17 +19,17 @@ export class DialogLT {
                 message: this.match.message,
                 replacements
             }),
-            buttons: [{type: 'close'}]
+            buttons: [{type: "close"}]
         })
         this.dialog.open()
         this.bind()
     }
 
     bind() {
-        this.dialog.dialogEl.addEventListener('click', event => {
+        this.dialog.dialogEl.addEventListener("click", event => {
             const el = {}
             switch (true) {
-            case findTarget(event, '.replacement', el): {
+            case findTarget(event, ".replacement", el): {
                 const id = parseInt(el.target.dataset.id)
                 this.applyReplacement(id)
                 break

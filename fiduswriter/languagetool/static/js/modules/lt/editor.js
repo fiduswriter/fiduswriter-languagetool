@@ -26,37 +26,37 @@ export class EditorLT {
     }
 
     init() {
-        const styleEl = document.createElement('style')
+        const styleEl = document.createElement("style")
 
         styleEl.innerHTML =
         `.language {
-            ${this.wavyUnderlineStyle('0000FF')}
+            ${this.wavyUnderlineStyle("0000FF")}
         }
         .grammar {
-            ${this.wavyUnderlineStyle('84b4a7')}
+            ${this.wavyUnderlineStyle("84b4a7")}
         }
         .spelling {
-            ${this.wavyUnderlineStyle('FF0000')}
+            ${this.wavyUnderlineStyle("FF0000")}
         }
         `
         document.head.appendChild(styleEl)
 
-        const toolMenu = this.editor.menu.headerbarModel.content.find(menu => menu.id === 'tools')
+        const toolMenu = this.editor.menu.headerbarModel.content.find(menu => menu.id === "tools")
 
         toolMenu.content.unshift(
             {
-                title: gettext('Spell/grammar checker'),
-                type: 'menu',
+                title: gettext("Spell/grammar checker"),
+                type: "menu",
                 disabled: editor => !this.supportedLanguages.includes(
                     editor.view.state.doc.firstChild.attrs.language
-                ) || editor.docInfo.access_rights !== 'write' || editor.app.isOffline(),
+                ) || editor.docInfo.access_rights !== "write" || editor.app.isOffline(),
                 content: [
                     {
-                        title: gettext('Check text'),
-                        type: 'action',
-                        tooltip: gettext('Check text for grammar and spelling issues.'),
+                        title: gettext("Check text"),
+                        type: "action",
+                        tooltip: gettext("Check text for grammar and spelling issues."),
                         action: _editor => {
-                            addAlert('info', gettext('Spell/grammar check initialized.'))
+                            addAlert("info", gettext("Spell/grammar check initialized."))
                             this.removeMainDecos()
                             this.removeFnDecos()
                             if (!this.sources) {
@@ -66,15 +66,15 @@ export class EditorLT {
                             Promise.all(
                                 this.sources.map(source => this.proofread(source))
                             ).then(
-                                () => addAlert('info', gettext('Spell/grammar check finished.'))
+                                () => addAlert("info", gettext("Spell/grammar check finished."))
                             )
                         },
                         disabled: editor => editor.app.isOffline(),
                     },
                     {
-                        title: gettext('Remove marks'),
-                        type: 'action',
-                        tooltip: gettext('Remove lines left over in the text from language check.'),
+                        title: gettext("Remove marks"),
+                        type: "action",
+                        tooltip: gettext("Remove lines left over in the text from language check."),
                         action: _editor => {
                             this.removeMainDecos()
                             this.removeFnDecos()
@@ -124,7 +124,7 @@ export class EditorLT {
                     }
                     let fnCount = 0
                     this.editor.view.state.doc.firstChild.child(index).descendants(node => {
-                        if (node.type.name === 'footnote') {
+                        if (node.type.name === "footnote") {
                             fnCount++
                         }
                     })
@@ -134,7 +134,7 @@ export class EditorLT {
                     let fnFromIndex = 0
                     for (let i = 0; i < index; i++) {
                         this.editor.view.state.doc.firstChild.child(i).descendants(node => {
-                            if (node.type.name === 'footnote') {
+                            if (node.type.name === "footnote") {
                                 fnFromIndex++
                             }
                         })
@@ -148,7 +148,7 @@ export class EditorLT {
                     let fnFromIndex = 0
                     for (let i = 0; i < index; i++) {
                         this.editor.view.state.doc.firstChild.child(i).descendants(node => {
-                            if (node.type.name === 'footnote') {
+                            if (node.type.name === "footnote") {
                                 fnFromIndex++
                             }
                         })
@@ -167,7 +167,7 @@ export class EditorLT {
 
     getSupportedLanguages() {
         postJson(
-            '/proxy/languagetool/languages'
+            "/proxy/languagetool/languages"
         ).then(({json}) => {
             this.supportedLanguages = json.map(entry => entry.longCode)
         })
@@ -178,7 +178,7 @@ export class EditorLT {
         source.badPos = []
         const citationInfos = []
         source.getNodes().forEach(topNode => topNode.descendants(node => {
-            if (node.type.name === 'citation') {
+            if (node.type.name === "citation") {
                 citationInfos.push(Object.assign({}, node.attrs, {references: node.attrs.references.slice()}))
             }
         }))
@@ -188,7 +188,7 @@ export class EditorLT {
                 this.editor.app.csl,
                 citationInfos,
                 this.editor.view.state.doc.firstChild.attrs.citationstyle,
-                '',
+                "",
                 this.editor.mod.db.bibDB
             )
             promise = fm.init()
@@ -205,7 +205,7 @@ export class EditorLT {
                 pos: 0,
                 posMap: source.posMap,
                 badPos: source.badPos
-            }).text : ''
+            }).text : ""
             if (!updatedText.trim().length) {
                 source.text = updatedText
                 return Promise.resolve({
@@ -249,17 +249,17 @@ export class EditorLT {
     }
 
     getText({nodes, citationTexts, pos = 0, posMap = [], badPos = []}) {
-        let text = ''
+        let text = ""
         nodes.forEach(node => {
-            if (node.marks?.find(mark => mark.type.name === 'deletion')) {
+            if (node.marks?.find(mark => mark.type.name === "deletion")) {
                 posMap.push([pos, node.nodeSize])
-            } else if (node.type.name === 'text') {
+            } else if (node.type.name === "text") {
                 pos += node.text.length
                 text += node.text
             } else if (node.isBlock) {
-                if (node.type.name !== 'doc') {
+                if (node.type.name !== "doc") {
                     pos++
-                    text += '\n'
+                    text += "\n"
                 }
                 if (node.content?.content) {
                     const childText = this.getText({
@@ -273,17 +273,17 @@ export class EditorLT {
                     text += childText.text
                 }
 
-                if (node.type.name !== 'doc' && (node.nodeSize - node.content.size) === 2) {
+                if (node.type.name !== "doc" && (node.nodeSize - node.content.size) === 2) {
                     pos++
-                    text += '\n'
+                    text += "\n"
                 }
-            } else if (node.type.name === 'citation') {
+            } else if (node.type.name === "citation") {
                 // Citation: We replace the node with the citation text and add mark
                 // those letters as a badPos so we avoid errors in them.
                 const citation = citationTexts.shift()
                 // We need to scrape HTML from string.
 
-                const dom = document.createElement('span')
+                const dom = document.createElement("span")
                 dom.innerHTML = citation[0][1]
                 const citationText = dom.innerText
                 text += citationText
