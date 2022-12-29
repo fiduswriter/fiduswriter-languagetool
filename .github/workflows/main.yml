@@ -20,10 +20,10 @@ jobs:
       LANGUAGETOOL_VERSION: 5.4
     steps:
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
-        python-version: 3.9
-    - uses: actions/checkout@v2
+        python-version: "3.11"
+    - uses: actions/checkout@v3
     - uses: nanasess/setup-chromedriver@master
     - name: Install dependencies
       run: |
