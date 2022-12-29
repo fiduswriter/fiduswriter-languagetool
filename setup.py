@@ -23,36 +23,35 @@ class build_py(_build_py):
                     modules.remove(module)
         return modules
 
-with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
+
+with open(os.path.join(os.path.dirname(__file__), "README.rst")) as readme:
     README = readme.read()
 
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='fiduswriter-languagetool',
-    version='3.11.0',
+    name="fiduswriter-languagetool",
+    version="3.11.0",
     packages=find_namespace_packages(),
     include_package_data=True,
-    exclude_package_data={
-        "": ["configuration.py", "django-admin.py", "build/*"]
-    },
-    license='AGPL License',
-    description='A Fidus Writer plugin to connect to Languagetool.',
+    exclude_package_data={"": ["configuration.py", "django-admin.py", "build/*"]},
+    license="AGPL License",
+    description="A Fidus Writer plugin to connect to Languagetool.",
     long_description=README,
-    url='https://github.com/fiduswriter/fiduswriter-languagetool',
-    author='Johannes Wilm',
-    author_email='johannes@fiduswriter.org',
+    url="https://github.com/fiduswriter/fiduswriter-languagetool",
+    author="Johannes Wilm",
+    author_email="johannes@fiduswriter.org",
     classifiers=[
-        'Environment :: Web Environment',
-        'Framework :: Django',
-        'Framework :: Django :: 4.1',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU Affero General Public License v3',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Topic :: Internet :: WWW/HTTP',
-        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        "Environment :: Web Environment",
+        "Framework :: Django",
+        "Framework :: Django :: 4.1",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
-    cmdclass={'build_py': build_py}
+    cmdclass={"build_py": build_py},
 )
