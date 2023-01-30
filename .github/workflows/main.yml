@@ -43,7 +43,7 @@ jobs:
         pip install pip --upgrade
         pip install flake8
         pip install black
-        if grep version setup.py | grep -q "dev";
+        if grep version pyproject.toml | grep -q "dev";
           then pip install https://github.com/fiduswriter/fiduswriter/archive/develop.zip;
           else pip install https://github.com/fiduswriter/fiduswriter/archive/main.zip;
         fi
