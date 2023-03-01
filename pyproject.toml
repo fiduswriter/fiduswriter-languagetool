@@ -1,3 +1,28 @@
 [build-system]
 requires = ["setuptools>=65.6.3", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "fiduswriter-languagetool"
+description = "A Fidus Writer plugin to connect to Languagetool."
+version = "3.11.1"
+readme = "README.md"
+license = {text = "AGPL-3.0-or-later"}
+authors = [
+  {email = "johannes@fiduswriter.org", name = "Johannes Wilm"},
+]
+classifiers=[
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 4.1",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: GNU Affero General Public License v3",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+
+[project.urls]
+repository = "https://github.com/fiduswriter/fiduswriter-languagetool"
