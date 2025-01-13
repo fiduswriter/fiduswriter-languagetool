@@ -1,6 +1,6 @@
-import {dialogTemplate} from "./templates"
-import {removeDecorationsBetween} from "./state_plugin"
 import {Dialog, escapeText, findTarget} from "../common"
+import {removeDecorationsBetween} from "./state_plugin"
+import {dialogTemplate} from "./templates"
 
 export class DialogLT {
     constructor(editor, view, match) {
@@ -29,13 +29,13 @@ export class DialogLT {
         this.dialog.dialogEl.addEventListener("click", event => {
             const el = {}
             switch (true) {
-            case findTarget(event, ".replacement", el): {
-                const id = parseInt(el.target.dataset.id)
-                this.applyReplacement(id)
-                break
-            }
-            default:
-                break
+                case findTarget(event, ".replacement", el): {
+                    const id = parseInt(el.target.dataset.id)
+                    this.applyReplacement(id)
+                    break
+                }
+                default:
+                    break
             }
         })
     }

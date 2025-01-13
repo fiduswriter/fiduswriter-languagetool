@@ -30,6 +30,8 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     packages=find_namespace_packages(),
     include_package_data=True,
-    exclude_package_data={"": ["configuration.py", "django-admin.py", "build/*"]},
+    exclude_package_data={
+        "": ["configuration.py", "django-admin.py", "build/*"]
+    },
     cmdclass={"build_py": build_py},
 )

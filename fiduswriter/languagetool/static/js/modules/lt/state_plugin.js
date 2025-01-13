@@ -5,7 +5,7 @@ import {DialogLT} from "./dialog"
 
 const key = new PluginKey("languagetool")
 
-export const setDecorations = function(state, newMatches) {
+export const setDecorations = function (state, newMatches) {
     const keyState = key.getState(state),
         matches = keyState.matches
     let decos = keyState.decos
@@ -17,19 +17,22 @@ export const setDecorations = function(state, newMatches) {
         } else if (match.rule.category.id === "GRAMMAR") {
             className = "grammar"
         }
-        const deco = Decoration.inline(match.from, match.to, {
-            class: className
-        }, {id: index + matches.length})
+        const deco = Decoration.inline(
+            match.from,
+            match.to,
+            {
+                class: className
+            },
+            {id: index + matches.length}
+        )
         decos = decos.add(state.doc, [deco])
     })
 
     return state.tr.setMeta(key, {decos, matches: matches.concat(newMatches)})
 }
 
-export const removeDecorations = function(state) {
-    let {
-        decos
-    } = key.getState(state)
+export const removeDecorations = function (state) {
+    let {decos} = key.getState(state)
 
     if (decos.find().length === 0) {
         return
@@ -39,7 +42,7 @@ export const removeDecorations = function(state) {
     return state.tr.setMeta(key, {decos, matches: []})
 }
 
-export const removeDecorationsBetween = function(state, from, to) {
+export const removeDecorationsBetween = function (state, from, to) {
     const keyState = key.getState(state),
         matches = keyState.matches
     let decos = keyState.decos
@@ -48,7 +51,7 @@ export const removeDecorationsBetween = function(state, from, to) {
     return state.tr.setMeta(key, {decos, matches})
 }
 
-export const languagetoolPlugin = function(options) {
+export const languagetoolPlugin = function (options) {
     return new Plugin({
         key,
         state: {
@@ -58,11 +61,11 @@ export const languagetoolPlugin = function(options) {
                     matches: []
                 }
             },
-            apply(tr, prev, oldState, state) {
-
+            apply(tr, _prev, oldState, state) {
                 if (
                     oldState.doc.firstChild?.attrs.language &&
-                    oldState.doc.firstChild?.attrs.language !== state.doc.firstChild.attrs.language
+                    oldState.doc.firstChild?.attrs.language !==
+                        state.doc.firstChild.attrs.language
                 ) {
                     // language has changed, remove all decorations
                     // also remove from footnotes
@@ -86,15 +89,14 @@ export const languagetoolPlugin = function(options) {
                 decos = decos.map(tr.mapping, tr.doc)
 
                 return {
-                    decos, matches
+                    decos,
+                    matches
                 }
             }
         },
         props: {
             decorations(state) {
-                const {
-                    decos
-                } = this.getState(state)
+                const {decos} = this.getState(state)
                 return decos
             },
             attributes: {
@@ -102,7 +104,10 @@ export const languagetoolPlugin = function(options) {
             },
             handleDOMEvents: {
                 contextmenu(view, event) {
-                    let pos = view.posAtCoords({left: event.clientX, top: event.clientY})
+                    let pos = view.posAtCoords({
+                        left: event.clientX,
+                        top: event.clientY
+                    })
                     if (!pos) {
                         return
                     }

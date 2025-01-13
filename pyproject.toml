@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "fiduswriter-languagetool"
 description = "A Fidus Writer plugin to connect to Languagetool."
-version = "3.11.2"
+version = "3.12.0-dev"
 readme = "README.md"
 license = {text = "AGPL-3.0-or-later"}
 authors = [
@@ -14,7 +14,7 @@ authors = [
 classifiers=[
   "Environment :: Web Environment",
   "Framework :: Django",
-  "Framework :: Django :: 4.1",
+  "Framework :: Django :: 5.1",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: GNU Affero General Public License v3",
   "Operating System :: OS Independent",
