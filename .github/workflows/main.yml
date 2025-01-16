@@ -46,8 +46,10 @@ jobs:
         sudo apt install libjpeg-dev python3-dev python3-pip gettext zlib1g-dev git nodejs build-essential openjdk-11-jre
         wget https://languagetool.org/download/LanguageTool-${LANGUAGETOOL_VERSION}.zip
         unzip LanguageTool-${LANGUAGETOOL_VERSION}.zip
-        cd fiduswriter
-        mv ../ci/configuration.py ./
+        if grep version pyproject.toml | grep -q "dev";
+          then pip install https://github.com/fiduswriter/fiduswriter/archive/develop.zip;
+          else pip install https://github.com/fiduswriter/fiduswriter/archive/main.zip;
+        fi
         pip install requests[security]
         pip install coverage
         pip install coveralls
@@ -56,10 +58,8 @@ jobs:
         pip install selenium
         pip install wheel
         pip install pip --upgrade
-        if grep version pyproject.toml | grep -q "dev";
-          then pip install https://github.com/fiduswriter/fiduswriter/archive/develop.zip;
-          else pip install https://github.com/fiduswriter/fiduswriter/archive/main.zip;
-        fi
+        cd fiduswriter
+        mv ../ci/configuration.py ./
         coverage run $(which fiduswriter) setup --no-static
     - name: Run test languagetool
       uses: nick-invision/retry@v3
