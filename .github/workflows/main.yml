@@ -14,16 +14,31 @@ on:
   workflow_dispatch:
 
 jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          pip install pip --upgrade
+          if grep version pyproject.toml | grep -q "dev";
+            then pip install https://github.com/fiduswriter/fiduswriter/archive/develop.zip;
+            else pip install https://github.com/fiduswriter/fiduswriter/archive/main.zip;
+          fi
+      - uses: pre-commit/action@v3.0.1
   test:
     runs-on: ubuntu-latest
     env:
-      LANGUAGETOOL_VERSION: 5.4
+      LANGUAGETOOL_VERSION: 6.5
     steps:
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
-    - uses: actions/checkout@v3
+        python-version: "3.13"
+    - uses: actions/checkout@v4
     - uses: nanasess/setup-chromedriver@master
     - name: Install dependencies
       run: |
@@ -47,7 +62,7 @@ jobs:
         fi
         coverage run $(which fiduswriter) setup --no-static
     - name: Run test languagetool
-      uses: nick-invision/retry@v2
+      uses: nick-invision/retry@v3
       with:
         timeout_minutes: 8
         max_attempts: 3
