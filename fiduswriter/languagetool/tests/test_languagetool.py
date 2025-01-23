@@ -1,15 +1,15 @@
 import time
 
+from channels.testing import ChannelsLiveServerTestCase
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import StaleElementReferenceException
-from testing.testcases import LiveTornadoTestCase
 from testing.selenium_helper import SeleniumHelper
 
 
-class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
+class LanguagetoolTest(ChannelsLiveServerTestCase, SeleniumHelper):
     fixtures = ["initial_documenttemplates.json", "initial_styles.json"]
 
     @classmethod
@@ -67,11 +67,11 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
         WebDriverWait(self.driver, self.wait_time).until(
             EC.presence_of_element_located((By.CLASS_NAME, "editor-toolbar"))
         )
-        self.driver.find_element(By.CSS_SELECTOR, ".article-body").click()
-        self.driver.find_element(By.CSS_SELECTOR, ".article-body").send_keys(
+        self.driver.find_element(By.CSS_SELECTOR, ".doc-body").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".doc-body").send_keys(
             (
                 "Thhis is me writing a sentence "
-                "I forgetz the the periodz to much"
+                "I my forgetz the the periodz to much"
             )
         )
         self.driver.find_element(
@@ -94,7 +94,17 @@ class LanguagetoolTest(LiveTornadoTestCase, SeleniumHelper):
         action.move_to_element(
             self.driver.find_element(By.CSS_SELECTOR, "span.grammar")
         ).context_click().perform()
-        self.driver.find_element(By.CSS_SELECTOR, "button.replacement").click()
+        # Entering grammar advice. There should be no accept button here. Only a close button.
+        WebDriverWait(self.driver, self.wait_time).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button.fw-orange"))
+        )
+        # Make sure the replacement button is missing.
+        replacement_buttons = self.driver.find_elements(
+            By.CSS_SELECTOR, "button.replacement"
+        )
+        self.assertEqual(len(replacement_buttons), 0)
+        # Click the close button.
+        self.driver.find_element(By.CSS_SELECTOR, "button.fw-orange").click()
         action = ActionChains(self.driver)
         action.move_to_element(
             self.driver.find_element(By.CSS_SELECTOR, "span.language")

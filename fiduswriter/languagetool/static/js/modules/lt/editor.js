@@ -53,7 +53,7 @@ export class EditorLT {
             type: "menu",
             disabled: editor =>
                 !this.supportedLanguages.includes(
-                    editor.view.state.doc.firstChild.attrs.language
+                    editor.view.state.doc.attrs.language
                 ) ||
                 editor.docInfo.access_rights !== "write" ||
                 editor.app.isOffline(),
@@ -116,93 +116,85 @@ export class EditorLT {
 
     initSources() {
         this.sources = []
-        this.editor.view.state.doc.firstChild.forEach(
-            (_node, _offset, index) => {
-                const language =
-                    this.editor.view.state.doc.firstChild.child(index).attrs
-                        .language ||
-                    this.editor.view.state.doc.firstChild.attrs.language
-                this.sources.push({
-                    language,
-                    view: this.editor.view,
-                    getNodes: () => [
-                        this.editor.view.state.doc.firstChild.child(index)
-                    ],
-                    getStartPos: () => {
-                        let pos = 1
-                        for (let i = 0; i < index; i++) {
-                            pos +=
-                                this.editor.view.state.doc.firstChild.child(
-                                    i
-                                ).nodeSize
-                        }
-                        return pos
-                    },
-                    posMap: [], // a map between doc positions in prosemirror and positions in LT
-                    badPos: [] // LT positions that have no PM equivalents
-                })
-                this.sources.push({
-                    // footnote editor
-                    language,
-                    view: this.editor.mod.footnotes.fnEditor.view,
-                    getNodes: () => {
-                        if (
-                            this.editor.mod.footnotes.fnEditor.view.state.doc
-                                .nodeSize === 2
-                        ) {
-                            return []
-                        }
-                        let fnCount = 0
-                        this.editor.view.state.doc.firstChild
-                            .child(index)
+        this.editor.view.state.doc.forEach((_node, _offset, index) => {
+            const language =
+                this.editor.view.state.doc.child(index).attrs.language ||
+                this.editor.view.state.doc.attrs.language
+            this.sources.push({
+                language,
+                view: this.editor.view,
+                getNodes: () => [this.editor.view.state.doc.child(index)],
+                getStartPos: () => {
+                    let pos = 0
+                    for (let i = 0; i < index; i++) {
+                        pos += this.editor.view.state.doc.child(i).nodeSize
+                    }
+                    return pos
+                },
+                posMap: [], // a map between doc positions in prosemirror and positions in LT
+                badPos: [] // LT positions that have no PM equivalents
+            })
+            this.sources.push({
+                // footnote editor
+                language,
+                view: this.editor.mod.footnotes.fnEditor.view,
+                getNodes: () => {
+                    if (
+                        this.editor.mod.footnotes.fnEditor.view.state.doc
+                            .nodeSize === 2
+                    ) {
+                        return []
+                    }
+                    let fnCount = 0
+                    this.editor.view.state.doc
+                        .child(index)
+                        .descendants(node => {
+                            if (node.type.name === "footnote") {
+                                fnCount++
+                            }
+                        })
+                    if (!fnCount) {
+                        return []
+                    }
+                    let fnFromIndex = 0
+                    for (let i = 0; i < index; i++) {
+                        this.editor.view.state.doc
+                            .child(i)
                             .descendants(node => {
                                 if (node.type.name === "footnote") {
-                                    fnCount++
+                                    fnFromIndex++
                                 }
                             })
-                        if (!fnCount) {
-                            return []
-                        }
-                        let fnFromIndex = 0
-                        for (let i = 0; i < index; i++) {
-                            this.editor.view.state.doc.firstChild
-                                .child(i)
-                                .descendants(node => {
-                                    if (node.type.name === "footnote") {
-                                        fnFromIndex++
-                                    }
-                                })
-                        }
-                        return this.editor.mod.footnotes.fnEditor.view.state.doc.content.content.slice(
-                            fnFromIndex,
-                            fnFromIndex + fnCount
-                        )
-                    },
-                    getStartPos: () => {
-                        let fnFromIndex = 0
-                        for (let i = 0; i < index; i++) {
-                            this.editor.view.state.doc.firstChild
-                                .child(i)
-                                .descendants(node => {
-                                    if (node.type.name === "footnote") {
-                                        fnFromIndex++
-                                    }
-                                })
-                        }
-                        let pos = 0
-                        for (let i = 0; i < fnFromIndex; i++) {
-                            pos +=
-                                this.editor.mod.footnotes.fnEditor.view.state.doc.child(
-                                    i
-                                ).nodeSize
-                        }
-                        return pos
-                    },
-                    posMap: [],
-                    badPos: []
-                })
-            }
-        )
+                    }
+                    return this.editor.mod.footnotes.fnEditor.view.state.doc.content.content.slice(
+                        fnFromIndex,
+                        fnFromIndex + fnCount
+                    )
+                },
+                getStartPos: () => {
+                    let fnFromIndex = 0
+                    for (let i = 0; i < index; i++) {
+                        this.editor.view.state.doc
+                            .child(i)
+                            .descendants(node => {
+                                if (node.type.name === "footnote") {
+                                    fnFromIndex++
+                                }
+                            })
+                    }
+                    let pos = 0
+                    for (let i = 0; i < fnFromIndex; i++) {
+                        pos +=
+                            this.editor.mod.footnotes.fnEditor.view.state.doc.child(
+                                i
+                            ).nodeSize
+                    }
+                    return pos
+                },
+                posMap: [],
+                badPos: []
+            })
+        })
     }
 
     getSupportedLanguages() {
@@ -231,7 +223,7 @@ export class EditorLT {
             fm = new FormatCitations(
                 this.editor.app.csl,
                 citationInfos,
-                this.editor.view.state.doc.firstChild.attrs.citationstyle,
+                this.editor.view.state.doc.attrs.citationstyle,
                 "",
                 this.editor.mod.db.bibDB
             )

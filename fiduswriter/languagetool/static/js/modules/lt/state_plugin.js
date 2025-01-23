@@ -63,9 +63,8 @@ export const languagetoolPlugin = function (options) {
             },
             apply(tr, _prev, oldState, state) {
                 if (
-                    oldState.doc.firstChild?.attrs.language &&
-                    oldState.doc.firstChild?.attrs.language !==
-                        state.doc.firstChild.attrs.language
+                    oldState.doc.attrs?.language &&
+                    oldState.doc.attrs?.language !== state.doc.attrs?.language
                 ) {
                     // language has changed, remove all decorations
                     // also remove from footnotes
