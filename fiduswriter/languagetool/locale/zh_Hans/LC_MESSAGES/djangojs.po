@@ -1,44 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Fidus Writer languagetool\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-14 09:49+0000\n"
-"Language: es\n"
+"POT-Creation-Date: 2026-05-14 09:55+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: POEditor.com\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: languagetool/static/js/modules/lt/editor.js:52
 msgid "Spell/grammar checker"
-msgstr "Corrector ortográfico/gramatical"
+msgstr "拼写/语法检查器"
 
 #: languagetool/static/js/modules/lt/editor.js:62
 msgid "Check text"
-msgstr "Verificar texto"
+msgstr "检查文字"
 
 #: languagetool/static/js/modules/lt/editor.js:65
 msgid "Check text for grammar and spelling issues."
-msgstr "Revise el texto por problemas de gramática y ortografía."
+msgstr "检查文本是否存在语法和拼写问题。"
 
 #: languagetool/static/js/modules/lt/editor.js:70
 msgid "Spell/grammar check initialized."
-msgstr "Corrección ortográfica/gramatical inicializada."
+msgstr "拼写/语法检查已初始化。"
 
 #: languagetool/static/js/modules/lt/editor.js:83
 msgid "Spell/grammar check finished."
-msgstr "Verificación de ortografía/gramática finalizada."
+msgstr "拼写/语法检查已完成。"
 
 #: languagetool/static/js/modules/lt/editor.js:90
 msgid "Remove marks"
-msgstr "Eliminar marcas"
+msgstr "去除标记"
 
 #: languagetool/static/js/modules/lt/editor.js:93
 msgid "Remove lines left over in the text from language check."
-msgstr ""
-"Elimine las líneas sobrantes en el texto de la verificación de idioma."
+msgstr "从语言检查中删除文本中剩余的行。"
 
 #: languagetool/static/js/modules/lt/templates.js:11
 msgid "Replace with"
-msgstr "Reemplazar con"
+msgstr "替换为"

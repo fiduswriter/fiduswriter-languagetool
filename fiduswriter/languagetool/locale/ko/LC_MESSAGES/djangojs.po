@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-14 09:56+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: languagetool/static/js/modules/lt/editor.js:52
+msgid "Spell/grammar checker"
+msgstr "철자/문법 검사기"
+
+#: languagetool/static/js/modules/lt/editor.js:62
+msgid "Check text"
+msgstr "텍스트 확인"
+
+#: languagetool/static/js/modules/lt/editor.js:65
+msgid "Check text for grammar and spelling issues."
+msgstr "문법 및 철자 문제가 있는지 텍스트를 확인하세요."
+
+#: languagetool/static/js/modules/lt/editor.js:70
+msgid "Spell/grammar check initialized."
+msgstr "맞춤법/문법 검사가 초기화되었습니다."
+
+#: languagetool/static/js/modules/lt/editor.js:83
+msgid "Spell/grammar check finished."
+msgstr "맞춤법/문법 검사가 완료되었습니다."
+
+#: languagetool/static/js/modules/lt/editor.js:90
+msgid "Remove marks"
+msgstr "표시 제거"
+
+#: languagetool/static/js/modules/lt/editor.js:93
+msgid "Remove lines left over in the text from language check."
+msgstr "언어 검사에서 텍스트에 남은 줄을 제거합니다."
+
+#: languagetool/static/js/modules/lt/templates.js:11
+msgid "Replace with"
+msgstr "다음으로 교체"

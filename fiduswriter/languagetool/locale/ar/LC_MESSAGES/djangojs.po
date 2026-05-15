@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-14 09:47+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: languagetool/static/js/modules/lt/editor.js:52
+msgid "Spell/grammar checker"
+msgstr "المدقق الإملائي/النحوي"
+
+#: languagetool/static/js/modules/lt/editor.js:62
+msgid "Check text"
+msgstr "تحقق من النص"
+
+#: languagetool/static/js/modules/lt/editor.js:65
+msgid "Check text for grammar and spelling issues."
+msgstr "التحقق من النص بحثًا عن مشكلات نحوية وإملائية."
+
+#: languagetool/static/js/modules/lt/editor.js:70
+msgid "Spell/grammar check initialized."
+msgstr "تمت تهيئة التدقيق الإملائي/النحوي."
+
+#: languagetool/static/js/modules/lt/editor.js:83
+msgid "Spell/grammar check finished."
+msgstr "تم الانتهاء من التدقيق الإملائي/ النحوي."
+
+#: languagetool/static/js/modules/lt/editor.js:90
+msgid "Remove marks"
+msgstr "إزالة العلامات"
+
+#: languagetool/static/js/modules/lt/editor.js:93
+msgid "Remove lines left over in the text from language check."
+msgstr "إزالة الأسطر المتبقية في النص من فحص اللغة."
+
+#: languagetool/static/js/modules/lt/templates.js:11
+msgid "Replace with"
+msgstr "استبدل ب"

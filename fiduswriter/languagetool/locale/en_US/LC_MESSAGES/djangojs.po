@@ -1,44 +1,50 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Fidus Writer languagetool\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-14 09:49+0000\n"
-"Language: es\n"
+"POT-Creation-Date: 2026-05-14 09:48+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: POEditor.com\n"
 
 #: languagetool/static/js/modules/lt/editor.js:52
 msgid "Spell/grammar checker"
-msgstr "Corrector ortográfico/gramatical"
+msgstr "Spell/grammar checker"
 
 #: languagetool/static/js/modules/lt/editor.js:62
 msgid "Check text"
-msgstr "Verificar texto"
+msgstr "Check text"
 
 #: languagetool/static/js/modules/lt/editor.js:65
 msgid "Check text for grammar and spelling issues."
-msgstr "Revise el texto por problemas de gramática y ortografía."
+msgstr "Check text for grammar and spelling issues."
 
 #: languagetool/static/js/modules/lt/editor.js:70
 msgid "Spell/grammar check initialized."
-msgstr "Corrección ortográfica/gramatical inicializada."
+msgstr "Spell/grammar check initialized."
 
 #: languagetool/static/js/modules/lt/editor.js:83
 msgid "Spell/grammar check finished."
-msgstr "Verificación de ortografía/gramática finalizada."
+msgstr "Spell/grammar check finished."
 
 #: languagetool/static/js/modules/lt/editor.js:90
 msgid "Remove marks"
-msgstr "Eliminar marcas"
+msgstr "Remove marks"
 
 #: languagetool/static/js/modules/lt/editor.js:93
 msgid "Remove lines left over in the text from language check."
-msgstr ""
-"Elimine las líneas sobrantes en el texto de la verificación de idioma."
+msgstr "Remove lines left over in the text from language check."
 
 #: languagetool/static/js/modules/lt/templates.js:11
 msgid "Replace with"
-msgstr "Reemplazar con"
+msgstr "Replace with"
