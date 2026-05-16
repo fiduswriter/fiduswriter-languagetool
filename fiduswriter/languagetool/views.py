@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse
 
 LT_URL = "https://languagetool.org/api/"
@@ -12,14 +12,13 @@ if hasattr(settings, "LT_URL"):
 
 
 @login_required
-@require_POST
+@require_GET
 async def languages(request):
-    data = request.POST
+
     url = urljoin(LT_URL, "v2/languages")
     async with AsyncClient() as client:
-        response = await client.post(
+        response = await client.get(
             url,
-            data=data,
             timeout=88,  # Firefox times out after 90 seconds, so we need to return before that.
         )
     return HttpResponse(response.text, status=response.status_code)

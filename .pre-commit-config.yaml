@@ -14,8 +14,15 @@ repos:
       rev: "75149f4e3b63c4df805860d7b04186d56dcbc05c"
       hooks:
           - id: biome-check
-            #entry: biome check --files-ignore-unknown=true --no-errors-on-unmatched --fix --unsafe
             additional_dependencies: ["@biomejs/biome@1.9.2"]
+    - repo: local
+      hooks:
+          - id: check-unused-imports
+            name: Check unused imports
+            entry: node lint/check_unused_imports.js
+            language: node
+            files: \.js$
+            additional_dependencies: ["acorn@8.10.0"]
     - repo: https://github.com/awebdeveloper/pre-commit-stylelint
       rev: "4200758f4cb2f53dd06898dd8dca35e4b8cfb785"
       hooks:

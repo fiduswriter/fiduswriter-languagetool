@@ -1,5 +1,5 @@
 import {FormatCitations} from "../citations/format"
-import {addAlert, getCookie, noSpaceTmp, postJson} from "../common"
+import {addAlert, getCookie, getJson, noSpaceTmp} from "../common"
 import {
     languagetoolPlugin,
     removeDecorations,
@@ -198,7 +198,7 @@ export class EditorLT {
     }
 
     getSupportedLanguages() {
-        postJson("/api/languagetool/languages/").then(({json}) => {
+        getJson("/api/languagetool/languages/").then(json => {
             this.supportedLanguages = json.map(entry => entry.longCode)
         })
     }

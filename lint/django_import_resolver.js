@@ -7,15 +7,56 @@ const EXCEPTIONS = ["../../../mathlive/opf_includes"]
 
 function getFidusWriterPath() {
     try {
-        const fwPath = execSync(
-            "python -c \"import fiduswriter; print(next(filter(lambda path: '/site-packages/' in path, fiduswriter.__path__), ''))\""
+        // Get all paths from fiduswriter.__path__ (handles namespace packages and editable installs)
+        const pathsOutput = execSync(
+            'python -c "import fiduswriter; import json; print(json.dumps([str(p) for p in fiduswriter.__path__]))"'
         )
             .toString()
             .trim()
-        if (fwPath) {
-            return fwPath
+
+        const paths = JSON.parse(pathsOutput)
+
+        // Get the current plugin directory to exclude it
+        const pluginDir = path.resolve(__dirname, "..")
+
+        // Find the first path that looks like fiduswriter core
+        // (not the plugin, and has typical fiduswriter apps like 'document')
+        for (const testPath of paths) {
+            const resolvedPath = fs.realpathSync(testPath)
+
+            // Skip if this is the plugin directory
+            if (
+                resolvedPath === pluginDir ||
+                resolvedPath.startsWith(pluginDir)
+            ) {
+                continue
+            }
+
+            // Check if this looks like fiduswriter core (has document app)
+            if (
+                fs.existsSync(path.join(resolvedPath, "document")) ||
+                fs.existsSync(path.join(resolvedPath, "bibliography"))
+            ) {
+                return resolvedPath
+            }
         }
-        throw new Error("Fidus Writer not found")
+
+        // Fallback: try to find fiduswriter core by looking in parent directories
+        // Assumes fiduswriter and fiduswriter-website are sibling directories
+        const pluginParent = path.resolve(pluginDir, "..")
+        const fiduswriterCore = path.join(
+            pluginParent,
+            "fiduswriter",
+            "fiduswriter"
+        )
+        if (
+            fs.existsSync(fiduswriterCore) &&
+            fs.statSync(fiduswriterCore).isDirectory()
+        ) {
+            return fiduswriterCore
+        }
+
+        throw new Error("Fidus Writer core not found")
     } catch (error) {
         console.error(
             "Failed to find Fidus Writer installation:",
