@@ -1,5 +1,5 @@
 import {FormatCitations} from "@fiduswriter/document/citations/format"
-import {addAlert, getCookie, getJson, noSpaceTmp} from "../common"
+import {addAlert, getCookie, getJson, noSpaceTmp} from "fwtoolkit"
 import {
     languagetoolPlugin,
     removeDecorations,

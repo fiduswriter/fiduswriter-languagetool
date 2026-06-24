@@ -1,4 +1,4 @@
-import {escapeText} from "../common"
+import {escapeText} from "fwtoolkit"
 
 export const dialogTemplate = ({message, replacements}) =>
     `<table class="fw-dialog-table">

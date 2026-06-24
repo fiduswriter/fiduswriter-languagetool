@@ -1,4 +1,4 @@
-import {Dialog, escapeText, findTarget} from "../common"
+import {Dialog, escapeText, findTarget} from "fwtoolkit"
 import {removeDecorationsBetween} from "./state_plugin"
 import {dialogTemplate} from "./templates"
 
