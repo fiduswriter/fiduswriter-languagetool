@@ -1,4 +1,4 @@
-import {FormatCitations} from "../citations/format"
+import {FormatCitations} from "@fiduswriter/document/citations/format"
 import {addAlert, getCookie, getJson, noSpaceTmp} from "../common"
 import {
     languagetoolPlugin,
