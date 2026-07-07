@@ -19,3 +19,5 @@ fiduswriter/fiduswriter.sql
 *.zip
 LanguageTool-*
 *.sql
+node_modules/
+package-lock.json

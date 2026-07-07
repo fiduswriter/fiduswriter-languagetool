@@ -1,5 +1,11 @@
 import {FormatCitations} from "@fiduswriter/document/citations/format"
-import {addAlert, getCookie, getJson, noSpaceTmp} from "fwtoolkit"
+import {
+    addProgress,
+    getCookie,
+    getJson,
+    interpolate,
+    noSpaceTmp
+} from "fwtoolkit"
 import {
     languagetoolPlugin,
     removeDecorations,
@@ -65,9 +71,10 @@ export class EditorLT {
                         "Check text for grammar and spelling issues."
                     ),
                     action: _editor => {
-                        addAlert(
+                        const task = addProgress(
                             "info",
-                            gettext("Spell/grammar check initialized.")
+                            gettext("Spell/grammar check initialized."),
+                            {autoClose: false}
                         )
                         this.removeMainDecos()
                         this.removeFnDecos()
@@ -75,14 +82,39 @@ export class EditorLT {
                             this.initSources()
                         }
 
+                        const sources = this.sources.slice()
+                        let completed = 0
+                        const updateProgress = () => {
+                            completed++
+                            const percentage = Math.round(
+                                (completed / sources.length) * 100
+                            )
+                            task.update(
+                                percentage,
+                                interpolate(
+                                    gettext("Checked %s of %s sections..."),
+                                    [completed, sources.length]
+                                )
+                            )
+                        }
+
                         Promise.all(
-                            this.sources.map(source => this.proofread(source))
-                        ).then(() =>
-                            addAlert(
-                                "info",
-                                gettext("Spell/grammar check finished.")
+                            sources.map(source =>
+                                this.proofread(source).then(() => {
+                                    updateProgress()
+                                })
                             )
                         )
+                            .then(() =>
+                                task.update(
+                                    100,
+                                    gettext("Spell/grammar check finished.")
+                                )
+                            )
+                            .catch(error => {
+                                task.close()
+                                throw error
+                            })
                     },
                     disabled: editor => editor.app.isOffline()
                 },
