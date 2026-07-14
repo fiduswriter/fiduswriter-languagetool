@@ -74,7 +74,7 @@ export class EditorLT {
                         const task = addProgress(
                             "info",
                             gettext("Spell/grammar check initialized."),
-                            {autoClose: false}
+                            {autoClose: 6000}
                         )
                         this.removeMainDecos()
                         this.removeFnDecos()
