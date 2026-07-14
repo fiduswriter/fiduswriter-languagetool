@@ -41,7 +41,7 @@ class LanguagetoolTest(ChannelsLiveServerTestCase, SeleniumHelper):
         while i < 100:
             i = i + 1
             info_alerts = self.driver.find_elements(
-                By.CSS_SELECTOR, "body #alerts-outer-wrapper .alerts-info"
+                By.CSS_SELECTOR, "body #fw-alerts-outer-wrapper .alerts-info"
             )
             for alert in info_alerts:
                 try:
