@@ -41,7 +41,8 @@ class LanguagetoolTest(ChannelsLiveServerTestCase, SeleniumHelper):
         while i < 100:
             i = i + 1
             progress_items = self.driver.find_elements(
-                By.CSS_SELECTOR, "body #fw-progress-outer-wrapper .fw-progress-info"
+                By.CSS_SELECTOR,
+                "body #fw-progress-outer-wrapper .fw-progress-info",
             )
             for item in progress_items:
                 try:
