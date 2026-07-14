@@ -35,24 +35,24 @@ class LanguagetoolTest(ChannelsLiveServerTestCase, SeleniumHelper):
     def tearDown(self):
         self.leave_site(self.driver)
 
-    def assertInfoAlert(self, message):
+    def assertInfoProgress(self, message):
         i = 0
         message_found = False
         while i < 100:
             i = i + 1
-            info_alerts = self.driver.find_elements(
-                By.CSS_SELECTOR, "body #fw-alerts-outer-wrapper .alerts-info"
+            progress_items = self.driver.find_elements(
+                By.CSS_SELECTOR, "body #fw-progress-outer-wrapper .fw-progress-info"
             )
-            for alert in info_alerts:
+            for item in progress_items:
                 try:
-                    if alert.text == message:
+                    if message in item.text:
                         message_found = True
                         break
                 except StaleElementReferenceException:
                     pass
-            if not message_found:
-                time.sleep(0.1)
-                continue
+            if message_found:
+                break
+            time.sleep(0.1)
         self.assertTrue(message_found)
 
     def test_spellcheck(self):
@@ -83,8 +83,8 @@ class LanguagetoolTest(ChannelsLiveServerTestCase, SeleniumHelper):
         self.driver.find_element(
             By.XPATH, '//*[normalize-space()="Check text"]'
         ).click()
-        self.assertInfoAlert("Spell/grammar check initialized.")
-        self.assertInfoAlert("Spell/grammar check finished.")
+        self.assertInfoProgress("Spell/grammar check initialized.")
+        self.assertInfoProgress("Spell/grammar check finished.")
         action = ActionChains(self.driver)
         action.move_to_element(
             self.driver.find_element(By.CSS_SELECTOR, "span.spelling")
