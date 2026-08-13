@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-14 09:55+0000\n"
+"POT-Creation-Date: 2026-07-23 07:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,31 +18,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: languagetool/static/js/modules/lt/editor.js:52
+#: languagetool/static/js/modules/lt/editor.js:58
 msgid "Spell/grammar checker"
 msgstr "拼写/语法检查器"
 
-#: languagetool/static/js/modules/lt/editor.js:62
+#: languagetool/static/js/modules/lt/editor.js:68
 msgid "Check text"
 msgstr "检查文字"
 
-#: languagetool/static/js/modules/lt/editor.js:65
+#: languagetool/static/js/modules/lt/editor.js:71
 msgid "Check text for grammar and spelling issues."
 msgstr "检查文本是否存在语法和拼写问题。"
 
-#: languagetool/static/js/modules/lt/editor.js:70
+#: languagetool/static/js/modules/lt/editor.js:76
 msgid "Spell/grammar check initialized."
 msgstr "拼写/语法检查已初始化。"
 
-#: languagetool/static/js/modules/lt/editor.js:83
+#: languagetool/static/js/modules/lt/editor.js:95
+#, javascript-format
+msgid "Checked %s of %s sections..."
+msgstr "已检查 %s 部分中的 %s..."
+
+#: languagetool/static/js/modules/lt/editor.js:111
 msgid "Spell/grammar check finished."
 msgstr "拼写/语法检查已完成。"
 
-#: languagetool/static/js/modules/lt/editor.js:90
+#: languagetool/static/js/modules/lt/editor.js:122
 msgid "Remove marks"
 msgstr "去除标记"
 
-#: languagetool/static/js/modules/lt/editor.js:93
+#: languagetool/static/js/modules/lt/editor.js:125
 msgid "Remove lines left over in the text from language check."
 msgstr "从语言检查中删除文本中剩余的行。"
 
