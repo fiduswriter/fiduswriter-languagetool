@@ -1,7 +1,7 @@
 {
-    "name": "fiduswriter-website-lint",
+    "name": "fiduswriter-languagetool-lint",
     "version": "1.0.0",
-    "description": "Linting tools for fiduswriter-website",
+    "description": "Linting tools for fiduswriter-languagetool-plugin",
     "dependencies": {
         "acorn": "^8.10.0"
     }

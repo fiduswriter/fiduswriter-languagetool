@@ -42,7 +42,7 @@ function getFidusWriterPath() {
         }
 
         // Fallback: try to find fiduswriter core by looking in parent directories
-        // Assumes fiduswriter and fiduswriter-website are sibling directories
+        // Assumes fiduswriter and fiduswriter-languagetool-plugin are sibling directories
         const pluginParent = path.resolve(pluginDir, "..")
         const fiduswriterCore = path.join(
             pluginParent,

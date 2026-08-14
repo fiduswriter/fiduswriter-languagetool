@@ -24,4 +24,4 @@ classifiers=[
 ]
 
 [project.urls]
-repository = "https://github.com/fiduswriter/fiduswriter-languagetool"
+repository = "https://github.com/fiduswriter/fiduswriter-languagetool-plugin"
