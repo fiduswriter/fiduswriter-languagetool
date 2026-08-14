@@ -1,4 +1,10 @@
+import json
+import multiprocessing
+import socket
 import time
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+from django.test.utils import override_settings
 
 from testing.live_server import ChannelsLiveServerTestCase
 from selenium.webdriver.common.by import By
@@ -8,12 +14,152 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import StaleElementReferenceException
 from testing.selenium_helper import SeleniumHelper
 
+# A small mock of the LanguageTool HTTP API (https://languagetool.org).
+# This lets the Selenium test run without a real LanguageTool server.
+# The matches below mirror what LanguageTool returns for the sentence
+# typed in test_spellcheck.
+LANGUAGES = [
+    {"name": "Arabic", "code": "ar", "longCode": "ar"},
+    {"name": "Asturian", "code": "ast", "longCode": "ast-ES"},
+    {"name": "Belarusian", "code": "be", "longCode": "be-BY"},
+    {"name": "Breton", "code": "br", "longCode": "br-FR"},
+    {"name": "Catalan", "code": "ca", "longCode": "ca-ES"},
+    {"name": "English (US)", "code": "en-US", "longCode": "en-US"},
+    {"name": "German (Germany)", "code": "de-DE", "longCode": "de-DE"},
+]
+
+MATCHES = [
+    {
+        "message": "Possible spelling mistake found.",
+        "shortMessage": "Spelling mistake",
+        "replacements": [
+            {"value": "This"},
+            {"value": "Thais"},
+            {"value": "Th\u00eds"},
+            {"value": "Th his"},
+        ],
+        "offset": 0,
+        "length": 5,
+        "rule": {
+            "id": "MORFOLOGIK_RULE_EN_US",
+            "category": {"id": "TYPOS"},
+        },
+    },
+    {
+        "message": (
+            "A verb may be missing between \u201cI\u201d and \u201cmy\u201d, "
+            "or a word may be misspelled."
+        ),
+        "shortMessage": "",
+        "replacements": [],
+        "offset": 31,
+        "length": 4,
+        "rule": {
+            "id": "PRP_THE",
+            "category": {"id": "GRAMMAR"},
+        },
+    },
+    {
+        "message": "Possible spelling mistake found.",
+        "shortMessage": "Spelling mistake",
+        "replacements": [
+            {"value": "forget"},
+            {"value": "forgets"},
+        ],
+        "offset": 36,
+        "length": 7,
+        "rule": {
+            "id": "MORFOLOGIK_RULE_EN_US",
+            "category": {"id": "TYPOS"},
+        },
+    },
+    {
+        "message": "Possible typo: you repeated a word.",
+        "shortMessage": "",
+        "replacements": [{"value": "the"}],
+        "offset": 44,
+        "length": 7,
+        "rule": {
+            "id": "ENGLISH_WORD_REPEAT_RULE",
+            "category": {"id": "MISC"},
+        },
+    },
+    {
+        "message": "Possible spelling mistake found.",
+        "shortMessage": "Spelling mistake",
+        "replacements": [
+            {"value": "period"},
+            {"value": "periods"},
+        ],
+        "offset": 52,
+        "length": 7,
+        "rule": {
+            "id": "MORFOLOGIK_RULE_EN_US",
+            "category": {"id": "TYPOS"},
+        },
+    },
+]
+
+
+class MockServerRequestHandler(BaseHTTPRequestHandler):
+    def _send_json(self, data):
+        body = json.dumps(data).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        if self.path.endswith("/v2/languages"):
+            self._send_json(LANGUAGES)
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def do_POST(self):
+        if self.path.endswith("/v2/check"):
+            self._send_json({"matches": MATCHES})
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def log_message(self, format, *args):
+        pass
+
+
+def get_free_port():
+    s = socket.socket(socket.AF_INET, type=socket.SOCK_STREAM)
+    s.bind(("localhost", 0))
+    address, port = s.getsockname()
+    s.close()
+    return port
+
 
 class LanguagetoolTest(ChannelsLiveServerTestCase, SeleniumHelper):
     fixtures = ["initial_documenttemplates.json", "initial_styles.json"]
 
     @classmethod
+    def start_server(cls, port):
+        httpd = HTTPServer(("", port), MockServerRequestHandler)
+        httpd.serve_forever()
+
+    @classmethod
     def setUpClass(cls):
+        cls.server_port = get_free_port()
+        cls.server = multiprocessing.Process(
+            target=cls.start_server, args=(cls.server_port,)
+        )
+        cls.server.daemon = True
+        cls.server.start()
+        # Point the language checker at the mock server. The override must be
+        # active before the live server child process is forked, because the
+        # view reads settings.LT_URL at request time inside that process.
+        cls._lt_override = override_settings(
+            LT_URL="http://localhost:{}/".format(cls.server_port)
+        )
+        cls._lt_override.enable()
+
         super().setUpClass()
         cls.base_url = cls.live_server_url
         driver_data = cls.get_drivers(1)
@@ -25,7 +171,9 @@ class LanguagetoolTest(ChannelsLiveServerTestCase, SeleniumHelper):
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
+        cls.server.terminate()
         super().tearDownClass()
+        cls._lt_override.disable()
 
     def setUp(self):
         self.user = self.create_user(

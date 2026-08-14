@@ -6,16 +6,18 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse
 
-LT_URL = "https://languagetool.org/api/"
-if hasattr(settings, "LT_URL"):
-    LT_URL = settings.LT_URL
+DEFAULT_LT_URL = "https://languagetool.org/api/"
+
+
+def get_lt_url():
+    return getattr(settings, "LT_URL", DEFAULT_LT_URL)
 
 
 @login_required
 @require_GET
 async def languages(request):
 
-    url = urljoin(LT_URL, "v2/languages")
+    url = urljoin(get_lt_url(), "v2/languages")
     async with AsyncClient() as client:
         response = await client.get(
             url,
@@ -28,7 +30,7 @@ async def languages(request):
 @require_POST
 async def check(request):
     data = request.POST
-    url = urljoin(LT_URL, "v2/check")
+    url = urljoin(get_lt_url(), "v2/check")
     async with AsyncClient() as client:
         response = await client.post(
             url,
