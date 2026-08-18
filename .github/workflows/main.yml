@@ -63,7 +63,7 @@ jobs:
         mv ../ci/.coveragerc ./
         coverage run $(which fiduswriter) setup --no-static
     - name: Run test languagetool
-      uses: nick-invision/retry@v3
+      uses: nick-invision/retry@v4
       with:
         timeout_minutes: 8
         max_attempts: 3
