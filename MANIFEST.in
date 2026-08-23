@@ -2,4 +2,5 @@ include LICENSE
 include README.rst
 recursive-include fiduswriter/languagetool/static *
 recursive-include fiduswriter/languagetool/assets *
+include fiduswriter/languagetool/package.json5
 recursive-include fiduswriter/languagetool/locale *
