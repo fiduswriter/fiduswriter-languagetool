@@ -56,6 +56,20 @@ function getFidusWriterPath() {
             return fiduswriterCore
         }
 
+        // New repository layout: the Django sources live in their own
+        // fiduswriter-server-backend repository checked out as a sibling.
+        const backendCore = path.join(
+            pluginParent,
+            "fiduswriter-server-backend",
+            "fiduswriter"
+        )
+        if (
+            fs.existsSync(backendCore) &&
+            fs.statSync(backendCore).isDirectory()
+        ) {
+            return backendCore
+        }
+
         throw new Error("Fidus Writer core not found")
     } catch (error) {
         console.error(
